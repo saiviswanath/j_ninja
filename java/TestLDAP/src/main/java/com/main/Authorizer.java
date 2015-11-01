@@ -18,8 +18,8 @@ import com.model.RoleMap;
 public class Authorizer {
   private LdapConnectionTemplate template;
   private boolean authorizedUser;
-  
-/*  private static ThreadLocal<Authorizer> instance = new ThreadLocal<Authorizer>() {
+
+  /*  private static ThreadLocal<Authorizer> instance = new ThreadLocal<Authorizer>() {
     @Override
     protected Authorizer initialValue() {
       return new Authorizer();
@@ -35,15 +35,18 @@ public class Authorizer {
     // Sample Lookup considering a role attribute in LDAP
     // for uid comma-separated.
     Set<String> roles = new HashSet<String>();
-    String roleString = template.lookup(
-        template.newDn( "uid=" + uid +",ou=people,dc=maxcrc,dc=com" ),
-        null,
-        new EntryMapper<String>() {
-          @Override
-          public String map( Entry entry ) throws LdapException {
-            return entry.get( "sn" ).getString(); // Treat sn as roles
-          }
-        } );
+    String roleString;
+    synchronized (template) {
+      roleString = template.lookup(
+          template.newDn( "uid=" + uid +",ou=people,dc=maxcrc,dc=com" ),
+          null,
+          new EntryMapper<String>() {
+            @Override
+            public String map( Entry entry ) throws LdapException {
+              return entry.get( "sn" ).getString(); // Treat sn as roles
+            }
+          } );
+    }
     String[] str = roleString.split(",");
     for (String s : str) {
       roles.add(s);
@@ -119,9 +122,9 @@ public class Authorizer {
 
   public RoleMap rebuildMap(String uid, String path, RoleMap existingMap) {
     // Roles will not be empty
-/*    if (existingMap == null) {
+    /*    if (existingMap == null) {
       return this.buildMap(uid, path);
-      
+
     }*/
     Set<String> roles = existingMap.getRoles();
     for (String role : roles) {
@@ -152,7 +155,7 @@ public class Authorizer {
     this.authorizedUser = authorizedUser;
   }
 
-  public void setLDAPTemplate(LdapConnectionTemplate template) {
+  public synchronized void setLDAPTemplate(LdapConnectionTemplate template) {
     this.template = template;
   }
 }

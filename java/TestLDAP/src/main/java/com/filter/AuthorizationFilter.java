@@ -20,7 +20,7 @@ import com.main.Authorizer;
 import com.model.RoleMap;
 
 public class AuthorizationFilter implements Filter {
-  private LdapConnectionTemplate template;
+  private static LdapConnectionTemplate template;
 
   public static void main(String[] args) {}
 
@@ -56,8 +56,7 @@ public class AuthorizationFilter implements Filter {
       }
     }
 
-    boolean isAuthorizedUser = auth.isAuthorizedUser();
-    if (isAuthorizedUser) {
+    if (auth.isAuthorizedUser()) {
       fc.doFilter(hReq, hRes);
     } else {
       hRes.sendRedirect(hReq.getContextPath() + "/error1.jsp");
