@@ -237,6 +237,8 @@ public class HashTableMap<K extends Comparable<? super K>, V extends Comparable<
    * @param args
    */
   public static void main(String[] args) {
+    System.out.println(Thread.currentThread().getName());
+  
     HashTableMap<Integer, String> map = new HashTableMap<Integer, String>(5);
 
     map.put(10, "Hello");

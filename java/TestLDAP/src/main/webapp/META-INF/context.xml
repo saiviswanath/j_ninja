@@ -1,0 +1,13 @@
+<!-- tomcat -->
+<Resource name="jdbc/test" 
+auth="Container" 
+type="javax.sql.DataSource" 
+username="foobar" 
+password="foobar" 
+driverClassName="com.mysql.jdbc.Driver" 
+url="jdbc:mysql://localhost/test"
+validationQuery="SELECT 1"
+testOnBorrow="true" 
+maxActive="10" 
+maxIdle="5"/>
+</Context>
