@@ -1,6 +1,6 @@
 <!-- jetty -->
 <Configure id="wac" class="org.eclipse.jetty.webapp.WebAppContext">
-<New id="jdbc/ops_dashboard" class="org.eclipse.jetty.plus.jndi.Resource">
+<New id="jdbc/test" class="org.eclipse.jetty.plus.jndi.Resource">
 	<Arg></Arg>
 	<Arg>jdbc/test</Arg>
 	<Arg>

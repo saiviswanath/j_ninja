@@ -85,7 +85,7 @@ public class Authorizer {
     return null;
   }
 
-  private StringBuilder getRoleString(Set<String> roles) {
+  private String getRoleString(Set<String> roles) {
     StringBuilder roleString = new StringBuilder();
     for (String role : roles) {
       if (roleString.length() == 0) {
@@ -94,7 +94,7 @@ public class Authorizer {
         roleString.append("," + "'" + role + "'");
       }
     }
-    return roleString;
+    return roleString.toString();
   }
 
   public RoleMap buildMap(String uid, String path) {
