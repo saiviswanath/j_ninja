@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-
+jsptaglibrary_2_0.xsd" version="2.0">
+<tlib-version>1.2</tlib-version>
+<uri>EmployeeFunctions</uri>
+<function>
+	<name>getEmployeeByFirstName</name>
+	<function-class>com.xyz.hrapp.el.EmployeeELProcessor</function-class>
+	<function-signature>
+		com.xyz.hrapp.beans.EmployeeBean getEmployeeByFirstName(java.lang.String) throws java.sql.SQLException
+	</function-signature>
+</function>
+<function>
+	<name>getAllEmployees</name>
+	<function-class>com.xyz.hrapp.el.EmployeeELProcessor</function-class>
+	<function-signature>
+		java.util.Set&lt;com.xyz.hrapp.beans.EmployeeBean&gt; getAllEmployees() throws java.sql.SQLException
+	</function-signature>
+</function>
+</taglib>
