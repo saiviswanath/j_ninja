@@ -6,6 +6,7 @@
 	<version>1.0.0</version>
 	<name>DBConnector</name>
 	<description>DBConnector</description>
+	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
