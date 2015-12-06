@@ -4,7 +4,7 @@
 	<groupId>TestLDAP</groupId>
 	<artifactId>TestLDAP</artifactId>
 	<version>1.0.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging> <!-- war for testing -->
 	<name>TestLDAP</name>
 	<description>TestLDAP</description>
 	<dependencies>
