@@ -14,10 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.directory.ldap.client.template.LdapConnectionTemplate;
 
-import com.db.DBConnectionManager;
 import com.ldap.LDAPConnectionTemplateManager;
 import com.main.Authorizer;
 import com.model.RoleMap;
+import com.xyz.db.DBConnector;
 
 public class AuthorizationFilter implements Filter {
   private static LdapConnectionTemplate template;
@@ -27,7 +27,7 @@ public class AuthorizationFilter implements Filter {
   @Override
   public void destroy() {
     template = null;
-    DBConnectionManager.clean();
+    DBConnector.clean();
   }
 
   @Override
@@ -37,16 +37,22 @@ public class AuthorizationFilter implements Filter {
     HttpServletResponse hRes = (HttpServletResponse) res;
     // Sample path, uid from open ldap ldif
     String path = hReq.getPathInfo();
-    String uid = "jjones";
     // Session per webapp for a user/browser combination.
     HttpSession session = hReq.getSession();
     Authorizer auth = new Authorizer();
     auth.setLDAPTemplate(template);
     RoleMap roleMap;
+    String uid;
     if (session.isNew()) {
       // Gets the map
+      uid = "jjones";
+      synchronized (session) {
+        session.setAttribute("user", uid);
+        session.setMaxInactiveInterval(300);
+      }
       roleMap = auth.buildMap(uid, path);
     } else {
+      uid = (String) session.getAttribute("user");
       roleMap = auth.rebuildMap(uid, path, (RoleMap) session.getAttribute("rolemap"));
     }
 

@@ -14,7 +14,7 @@ import com.model.RoleMap;
 
 public class LDAPTest extends HttpServlet {
   /**
-   * 
+   *    
    */
   private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class LDAPTest extends HttpServlet {
     resp.setContentType("text/html");
     PrintWriter pw = resp.getWriter();
     HttpSession session = req.getSession();
-    pw.println("<html><body><h1>" + ((RoleMap) session.getAttribute("rolemap")).toString() + "</h1><br/><h1>"+ req.getPathInfo()+"</h1>" +"</body></html>");
+    pw.println("<html><body><h1>" + (String) session.getAttribute("user")+ "</h1><br/><h1>" + ((RoleMap) session.getAttribute("rolemap")).toString() + "</h1><br/><h1>"+ req.getPathInfo()+"</h1>" +"</body></html>");
     pw.close();
   }
 

@@ -1,12 +1,13 @@
 <!-- tomcat -->
-<Resource name="jdbc/test" 
+<Context>
+<Resource name="jdbc/XE" 
 auth="Container" 
 type="javax.sql.DataSource" 
-username="foobar" 
-password="foobar" 
-driverClassName="com.mysql.jdbc.Driver" 
-url="jdbc:mysql://localhost/test"
-validationQuery="SELECT 1"
+username="hr"
+password="hr" 
+driverClassName="oracle.jdbc.OracleDriver" 
+url="jdbc:oracle:thin:@//localhost:1521/XE"
+validationQuery="SELECT 1 from dual"
 testOnBorrow="true" 
 maxActive="10" 
 maxIdle="5"/>
