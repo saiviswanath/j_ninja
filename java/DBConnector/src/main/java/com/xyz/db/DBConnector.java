@@ -5,6 +5,7 @@ package com.xyz.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -13,15 +14,19 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
+import com.xyz.util.PropertyConstants;
+import com.xyz.util.PropertyLoader;
+
 /**
  * @author viswa
  *
  */
 public class DBConnector {
-  private DBConnector() {}
-
-  private static DataSource dataSource;
   private static final Logger logger = Logger.getLogger(DBConnector.class);
+  private static DataSource dataSource;
+  private static Properties props = PropertyLoader.getProperties();
+  
+  private DBConnector() {}
 
   public static synchronized Connection getDBConnection() {
     if (dataSource != null) {
@@ -37,7 +42,7 @@ public class DBConnector {
       Context context;
       try {
         context = new InitialContext();
-        dataSource = (DataSource) context.lookup("java:comp/env/jdbc/XE");
+        dataSource = (DataSource) context.lookup(props.getProperty(PropertyConstants.JNDI_DATASOURCE_NAME));
         if (dataSource == null) {
           logger.error("Unable to connect to DB");
           throw new RuntimeException("Unable to connect to DB");

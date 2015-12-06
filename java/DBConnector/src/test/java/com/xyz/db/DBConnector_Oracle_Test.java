@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author viswa
  *
  */
-public class DBConnector_Test {
+public class DBConnector_Oracle_Test {
   private static InitialContext context;
   private static OracleConnectionPoolDataSource ds;
   private static String dsName;
@@ -50,7 +52,6 @@ public class DBConnector_Test {
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-    String contextPath = "src/test/resources/context.xml";
 
     System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
         "org.apache.naming.java.javaURLContextFactory");
@@ -61,7 +62,7 @@ public class DBConnector_Test {
 
     try {
       DocumentBuilder builder = builderFactory.newDocumentBuilder();
-      Document document = builder.parse(new FileInputStream(contextPath));
+      Document document = builder.parse(new FileInputStream(createContextFile()));
       Node resourceNode = document.getElementsByTagName("Resource").item(0);
       NamedNodeMap resourceAttrs = resourceNode.getAttributes();
 
@@ -138,7 +139,7 @@ public class DBConnector_Test {
     ds = null;
     try {
       context.bind("java:comp/env/" + dsName, ds); // Unbound in testGetDBConnectionOnUnbind, so
-                                                   // rebinding same jndi name to null
+      // rebinding same jndi name to null
     } catch (NamingException e) {
       throw new RuntimeException(e.getMessage());
     }
@@ -146,5 +147,38 @@ public class DBConnector_Test {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("Unable to connect to DB");
     DBConnector.getDBConnection();
+  }
+
+  private static String createContextFile() {
+    File ctxtFile = null;
+    try (FileOutputStream fos =
+        new FileOutputStream(ctxtFile = File.createTempFile("context", ".xml"))) {
+      if (!ctxtFile.canWrite()) {
+        throw new RuntimeException("Could not write to " + ctxtFile.getAbsolutePath());
+      }
+      ctxtFile.deleteOnExit();
+
+      StringBuilder sb = new StringBuilder();
+      sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+      sb.append("<Context>");
+      sb.append("<Resource name=\"jdbc/XE\" ");
+      sb.append("auth=\"Container\" ");
+      sb.append("type=\"javax.sql.DataSource\" ");
+      sb.append("username=\"hr\" ");
+      sb.append("password=\"hr\" ");
+      sb.append("driverClassName=\"oracle.jdbc.OracleDriver\" ");
+      sb.append("url=\"jdbc:oracle:thin:@//localhost:1521/XE\" ");
+      sb.append("validationQuery=\"SELECT 1 from dual\" ");
+      sb.append("testOnBorrow=\"true\" ");
+      sb.append("maxActive=\"10\" ");
+      sb.append("maxIdle=\"5\"/>");
+      sb.append("</Context>");
+
+      fos.write(sb.toString().getBytes());
+
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+    return ctxtFile.getAbsolutePath();
   }
 }
