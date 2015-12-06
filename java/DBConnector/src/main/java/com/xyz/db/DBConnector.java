@@ -24,7 +24,7 @@ import com.xyz.util.PropertyLoader;
 public class DBConnector {
   private static final Logger logger = Logger.getLogger(DBConnector.class);
   private static DataSource dataSource;
-  private static Properties props = PropertyLoader.getProperties();
+  private static final Properties props = PropertyLoader.getProperties();
   
   private DBConnector() {}
 

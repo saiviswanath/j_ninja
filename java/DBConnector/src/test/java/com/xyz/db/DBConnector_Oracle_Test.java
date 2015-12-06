@@ -19,7 +19,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 
@@ -29,11 +28,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 /**
  * Ref: https://blogs.oracle.com/randystuph/entry/injecting_jndi_datasources_for_junit
@@ -59,35 +56,22 @@ public class DBConnector_Oracle_Test {
     context = new InitialContext();
 
     ds = new OracleConnectionPoolDataSource();
+    DocumentBuilder builder = builderFactory.newDocumentBuilder();
+    Document document = builder.parse(new FileInputStream(createContextFile()));
+    Node resourceNode = document.getElementsByTagName("Resource").item(0);
+    NamedNodeMap resourceAttrs = resourceNode.getAttributes();
 
-    try {
-      DocumentBuilder builder = builderFactory.newDocumentBuilder();
-      Document document = builder.parse(new FileInputStream(createContextFile()));
-      Node resourceNode = document.getElementsByTagName("Resource").item(0);
-      NamedNodeMap resourceAttrs = resourceNode.getAttributes();
+    ds.setUser(resourceAttrs.getNamedItem("username").getNodeValue());
+    ds.setPassword(resourceAttrs.getNamedItem("password").getNodeValue());
+    ds.setURL(resourceAttrs.getNamedItem("url").getNodeValue());
+    dsName = resourceAttrs.getNamedItem("name").getNodeValue();
 
-      ds.setUser(resourceAttrs.getNamedItem("username").getNodeValue());
-      ds.setPassword(resourceAttrs.getNamedItem("password").getNodeValue());
-      ds.setURL(resourceAttrs.getNamedItem("url").getNodeValue());
-      dsName = resourceAttrs.getNamedItem("name").getNodeValue();
+    context.createSubcontext("java:");
+    context.createSubcontext("java:comp");
+    context.createSubcontext("java:comp/env");
+    context.createSubcontext("java:comp/env/jdbc");
 
-      context.createSubcontext("java:");
-      context.createSubcontext("java:comp");
-      context.createSubcontext("java:comp/env");
-      context.createSubcontext("java:comp/env/jdbc");
-
-      context.bind("java:comp/env/" + dsName, ds);
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException(e.getMessage());
-    } catch (SAXException e) {
-      throw new RuntimeException(e.getMessage());
-    } catch (IOException e) {
-      throw new RuntimeException(e.getMessage());
-    } catch (DOMException e) {
-      throw new RuntimeException(e.getMessage());
-    } catch (NamingException e) {
-      throw new RuntimeException(e.getMessage());
-    }
+    context.bind("java:comp/env/" + dsName, ds);
   }
 
   @AfterClass

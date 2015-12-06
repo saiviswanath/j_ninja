@@ -8,10 +8,12 @@ import org.apache.log4j.Logger;
 
 public class PropertyLoader {
   private static final Logger logger = Logger.getLogger(PropertyLoader.class);
+
   private PropertyLoader() {}
-  
-  public static Properties getProperties() {
-    InputStream in = PropertyLoader.class.getResourceAsStream("Application.properties");
+
+  public static Properties getProperties() throws RuntimeException {
+    InputStream in =
+        PropertyLoader.class.getClassLoader().getResourceAsStream("Application.properties");
     if (in == null) {
       logger.error("Application.properties not defined");
       throw new RuntimeException("Application.properties not defined");
