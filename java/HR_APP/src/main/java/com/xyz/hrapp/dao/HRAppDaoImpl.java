@@ -12,8 +12,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.xyz.db.DBConnector;
 import com.xyz.hrapp.beans.EmployeeBean;
-import com.xyz.hrapp.db.DataHandler;
 
 /**
  * @author viswa
@@ -24,13 +24,15 @@ public class HRAppDaoImpl implements HRAppDao {
 
   /**
    * Returns all employee details
+   * 
    * @throws SQLException
    */
   @Override
   public Set<EmployeeBean> getAllEmployees() throws SQLException {
-    Connection con = DataHandler.getDBConnection();
-    String sql = "select employee_id, first_name, last_name, email, phone_number, hire_date"
-        + " from employees order by employee_id";
+    Connection con = DBConnector.getDBConnection();
+    String sql =
+        "select employee_id, first_name, last_name, email, phone_number, hire_date"
+            + " from employees order by employee_id";
     logger.debug("Executing sql: " + sql);
     Set<EmployeeBean> employees = null;
     try (PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -54,21 +56,22 @@ public class HRAppDaoImpl implements HRAppDao {
 
   /**
    * Return employee details by firstname
-   * @param firstName
-   * throws SQLException
+   * 
+   * @param firstName throws SQLException
    */
   @Override
   public EmployeeBean getEmployeeByFirstName(String firstName) throws SQLException {
-    Connection con = DataHandler.getDBConnection();
-    String sql = "select employee_id, first_name, last_name, email, phone_number, hire_date"
-        + " from employees where first_name = ?";
+    Connection con = DBConnector.getDBConnection();
+    String sql =
+        "select employee_id, first_name, last_name, email, phone_number, hire_date"
+            + " from employees where first_name = ?";
     logger.debug("Executing sql: " + sql);
     EmployeeBean employee = null;
     try (PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setString(1, firstName);
       ResultSet rs = stmt.executeQuery();
       if (rs != null) {
-        while(rs.next()) {
+        while (rs.next()) {
           employee = new EmployeeBean();
           employee.setId(rs.getInt(1));
           employee.setFirstName(rs.getString(2));

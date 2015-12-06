@@ -38,6 +38,11 @@
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>DBConnector</groupId>
+			<artifactId>DBConnector</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -82,7 +87,7 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>prod</id>
 			<activation>
@@ -112,14 +117,9 @@
 							<target>1.7</target>
 						</configuration>
 					</plugin>
-<!-- 					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat6-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<port>${maven.tomcat.port}</port>
-						</configuration>
-					</plugin> -->
+					<!-- <plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat6-maven-plugin</artifactId> 
+						<version>2.2</version> <configuration> <port>${maven.tomcat.port}</port> 
+						</configuration> </plugin> -->
 				</plugins>
 			</build>
 		</profile>
