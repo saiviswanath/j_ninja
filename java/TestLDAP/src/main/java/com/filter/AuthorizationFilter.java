@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.directory.ldap.client.template.LdapConnectionTemplate;
+import org.apache.log4j.Logger;
 
 import com.ldap.LDAPConnectionTemplateManager;
 import com.main.Authorizer;
@@ -20,6 +22,7 @@ import com.model.RoleMap;
 import com.xyz.db.DBConnector;
 
 public class AuthorizationFilter implements Filter {
+  private static final Logger logger = Logger.getLogger(AuthorizationFilter.class);
   private static LdapConnectionTemplate template;
 
   public static void main(String[] args) {}
@@ -36,7 +39,8 @@ public class AuthorizationFilter implements Filter {
     HttpServletRequest hReq = (HttpServletRequest) req;
     HttpServletResponse hRes = (HttpServletResponse) res;
     // Sample path, uid from open ldap ldif
-    String path = hReq.getPathInfo();
+    String path = hReq.getRequestURI();
+    logger.debug("Path Info: " + path);
     // Session per webapp for a user/browser combination.
     HttpSession session = hReq.getSession();
     Authorizer auth = new Authorizer();
@@ -62,10 +66,12 @@ public class AuthorizationFilter implements Filter {
       }
     }
 
-    if (auth.isAuthorizedUser()) {
-      fc.doFilter(hReq, hRes);
+    if (!auth.isAuthorizedUser()) {
+      hReq.setAttribute("unauthpage", path);
+      hRes.sendRedirect(hReq.getContextPath() + "/jsps/UnAuthorized.jsp");
+      return;
     } else {
-      hRes.sendRedirect(hReq.getContextPath() + "/error1.jsp");
+      fc.doFilter(hReq, hRes);
     }
   }
 

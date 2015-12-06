@@ -106,13 +106,17 @@ public class Authorizer {
   public RoleMap buildMap(String uid, String path) {
     RoleMap roleMap = new RoleMap();
     Set<String> roles = this.getLDAPRoles(uid);
+    logger.debug("LDAP Roles: " + roles.toString());
     if (roles.isEmpty()) {
       this.setAuthorizedUser(false);
-      return null; // Empty
+      return roleMap; // Empty
     }
     Set<String> mappedRoles = getMappedRolesInDB(path, roles);
     if (mappedRoles != null) {
+      logger.debug("Fetched Roles from DB for path " + path + " : " + mappedRoles.toString());
       this.setAuthorizedUser(true);
+    } else {
+      return roleMap;
     }
 
     // Build map for mapping/non-mapping role-path
@@ -127,23 +131,28 @@ public class Authorizer {
   }
 
   public RoleMap rebuildMap(String uid, String path, RoleMap existingMap) {
-    // Roles will not be empty
-    /*
-     * if (existingMap == null) { return this.buildMap(uid, path);
-     * 
-     * }
-     */
+
+    if (existingMap == null) {
+      return this.buildMap(uid, path);
+    }
+
     Set<String> roles = existingMap.getRoles();
+    logger.debug("Existing RoleMap before rebuild: " + existingMap.toString());
+    logger.debug("Existing Roles before rebuild:: " + roles.toString());
     for (String role : roles) {
       Set<String> links = existingMap.getLinksForRole(role);
-      if (links.contains(path)) {
-        // There is a role for user with a link, so authrorized.
-        this.setAuthorizedUser(true);
-        return existingMap; // Unmodified map
+      if (links != null) {
+        if (links.contains(path)) {
+          // There is a role for user with a link, so authrorized.
+          this.setAuthorizedUser(true);
+          return existingMap; // Unmodified map
+        }
       }
     }
+    
     Set<String> mappedRoles = getMappedRolesInDB(path, roles);
     if (mappedRoles != null) {
+      logger.debug("Fetched Roles from DB for path " + path + " : " + roles.toString());
       this.setAuthorizedUser(true);
     } else {
       return existingMap;

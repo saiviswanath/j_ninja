@@ -1,13 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Context>
-<Resource name="jdbc/XE" 
-auth="Container" 
-type="javax.sql.DataSource" 
+<Resource name="jdbc/XE"
+auth="Container"
+type="javax.sql.DataSource"
 username="hr"
-password="hr" 
-driverClassName="oracle.jdbc.OracleDriver" 
+password="hr"
+driverClassName="oracle.jdbc.OracleDriver"
 url="jdbc:oracle:thin:@//localhost:1521/XE"
 validationQuery="SELECT 1 from dual"
-testOnBorrow="true" 
-maxActive="10" 
+testOnBorrow="true"
+maxActive="10"
 maxIdle="5"/>
 </Context>

@@ -43,6 +43,11 @@
 			<artifactId>DBConnector</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>TestLDAP</groupId>
+			<artifactId>TestLDAP</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

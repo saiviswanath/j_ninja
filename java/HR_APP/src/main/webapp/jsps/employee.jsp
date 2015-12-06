@@ -12,6 +12,11 @@
 <link rel="icon" href="/HR_APP/favicon.ico" type="image/x-icon" />
 </head>
 <body>
+	<div id="helloUser" align="right">
+	<h4>
+		<c:out value="Hello, ${sessionScope.user}"/> 
+	</h4>
+	</div>
 	<div id="empFilterDiv">
 		<h3>
 			<c:out value="Search by Employee First Name:" />
