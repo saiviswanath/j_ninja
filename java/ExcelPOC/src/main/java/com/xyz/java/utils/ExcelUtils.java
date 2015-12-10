@@ -1,5 +1,7 @@
 package com.xyz.java.utils;
 
+import java.util.Date;
+
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -81,6 +83,8 @@ public class ExcelUtils {
     cell.setCellType(cellType);
     if (value instanceof Double) {
       cell.setCellValue(((Double) value).doubleValue());
+    } else if (value instanceof Date) {
+      cell.setCellValue((Date) value);
     } else {
       cell.setCellValue(new XSSFRichTextString(value.toString()));
     }
