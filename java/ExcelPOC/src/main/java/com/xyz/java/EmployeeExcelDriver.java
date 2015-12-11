@@ -1,8 +1,6 @@
 package com.xyz.java;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -49,11 +47,11 @@ public class EmployeeExcelDriver extends AbstractExcelDriver {
         ExcelUtils.addCell(row, cellStyle, (short) 0, Cell.CELL_TYPE_NUMERIC, empBean.getId());
         ExcelUtils.addCell(row, cellStyle, (short) 1, Cell.CELL_TYPE_STRING, empBean.getLastName());
         ExcelUtils
-            .addCell(row, cellStyle, (short) 2, Cell.CELL_TYPE_STRING, empBean.getFirstName());
+        .addCell(row, cellStyle, (short) 2, Cell.CELL_TYPE_STRING, empBean.getFirstName());
         ExcelUtils.addCell(row, cellStyle, (short) 3, Cell.CELL_TYPE_STRING,
             empBean.getPhoneNumber());
         ExcelUtils.addCell(row, cellStyle, (short) 4, Cell.CELL_TYPE_STRING, empBean.getEmail());
-        
+
         CellStyle dateCellStyle =
             ExcelUtils.setStyle(super.workBook, font, false, HSSFColor.WHITE.index,
                 CellStyle.ALIGN_RIGHT, "m/d/yy", false, false);

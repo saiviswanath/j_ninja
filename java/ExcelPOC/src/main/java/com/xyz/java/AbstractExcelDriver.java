@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -13,9 +14,16 @@ public abstract class AbstractExcelDriver {
   public void buildExcel(Workbook workBook, File file) throws IOException, FileNotFoundException {
     this.workBook = workBook;
     processExcelSheet();
-    FileOutputStream out = new FileOutputStream(file);
+    try (FileOutputStream out = new FileOutputStream(file)) {
     workBook.write(out);
-    out.close();
+    }
+  }
+  
+  public void buildExcel(OutputStream outStream, Workbook workBook) throws IOException, FileNotFoundException {
+    this.workBook = workBook;
+    processExcelSheet();
+    workBook.write(outStream);
+    outStream.close();
   }
 
   protected abstract void processExcelSheet();

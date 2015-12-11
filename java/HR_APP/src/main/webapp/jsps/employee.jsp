@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1" import="com.xyz.hrapp.dao.HRAppDaoImpl"%>
+	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ taglib uri="EmployeeFunctions" prefix="empf"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -13,9 +12,9 @@
 </head>
 <body>
 	<div id="helloUser" align="right">
-	<h4>
-		<c:out value="Hello, ${sessionScope.user}"/> 
-	</h4>
+		<h4>
+			<c:out value="Hello, ${sessionScope.user}" />
+		</h4>
 	</div>
 	<div id="empFilterDiv">
 		<h3>
@@ -37,55 +36,26 @@
 
 	<c:if test="${param.flip eq true}">
 		<!-- Preferred is commns-lang3 escapeHtml to mitigate XSS -->
-		<c:set var="escFirstName" value="${fn:escapeXml(param.firstName)}" />
+		<c:set var="escFirstName" value="${fn:escapeXml(param.firstName)}"
+			scope="request" />
 		<c:choose>
-			<c:when test="${pageScope.escFirstName eq ''}">
-				<c:set var="showAll" value="true" />
+			<c:when test="${requestScope.escFirstName eq ''}">
+				<c:set var="showAll" value="true" scope="request" />
 			</c:when>
 			<c:otherwise>
-				<c:set var="showAll" value="false" />
+				<c:set var="showAll" value="false" scope="request" />
 			</c:otherwise>
 		</c:choose>
 
+		<c:import url="includes/employeeinclude.jsp" />
 
-		<div id="empDetails">
-			<h3>
-				<c:out value="Employee Details: " />
-			</h3>
-			<table id="emptable" border="1" cellpadding="1" cellspacing="1">
-				<th>Id</th>
-				<th>First Name</th>
-				<th>Last Name</th>
-				<th>Email</th>
-				<th>Phone Number</th>
-				<th>Hire Date</th>
-				<c:choose>
-					<c:when test="${pageScope.showAll eq true}">
-						<c:forEach var="employee" items="${empf:getAllEmployees()}">
-							<tr>
-								<td>${employee.id}</td>
-								<td>${employee.firstName}</td>
-								<td>${employee.lastName}</td>
-								<td>${employee.email}</td>
-								<td>${employee.phoneNumber}</td>
-								<td>${employee.hireDate}</td>
-							</tr>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						<c:set var="employee"
-							value="${empf:getEmployeeByFirstName(pageScope.escFirstName)}" />
-						<tr>
-							<td>${employee.id}</td>
-							<td>${employee.firstName}</td>
-							<td>${employee.lastName}</td>
-							<td>${employee.email}</td>
-							<td>${employee.phoneNumber}</td>
-							<td>${employee.hireDate}</td>
-						</tr>
-					</c:otherwise>
-				</c:choose>
-			</table>
+		<div id="export">
+			<form id="empex" name="empex" action="EmployeeExport.jsp"
+				method="post">
+				<input name="name" type="hidden"
+					value="${requestScope.escFirstName}" /> <input type="submit"
+					value="export" />
+			</form>
 		</div>
 	</c:if>
 </body>

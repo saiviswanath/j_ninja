@@ -48,6 +48,11 @@
 			<artifactId>TestLDAP</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>ExcelPOC</groupId>
+			<artifactId>ExcelPOC</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
