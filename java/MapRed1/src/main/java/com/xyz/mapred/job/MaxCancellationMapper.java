@@ -17,7 +17,7 @@ public class MaxCancellationMapper extends Mapper<NullWritable, Text, Text, IntW
   @Override
   public void map(NullWritable key, Text value, Context context) throws IOException,
       InterruptedException {
-    String line = value.toString();
+    final String line = value.toString();
 
     if (line.isEmpty() || line.startsWith("Year")) {
       return;
@@ -30,8 +30,8 @@ public class MaxCancellationMapper extends Mapper<NullWritable, Text, Text, IntW
 
 
     IntWritable outVal = null;
-    boolean cancelFlag = Boolean.parseBoolean(fieldVals[21]);
-    if (cancelFlag) {
+    String cancelFlag = fieldVals[21];
+    if (cancelFlag.equals("1")) {
       outVal = new IntWritable(1);
     } else {
       outVal = new IntWritable(0);

@@ -10,7 +10,9 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
@@ -28,9 +30,9 @@ public class MaxCancellationDriver extends Configured implements Tool {
   public static void main(String[] args) {
     logger.info("Starting MaxCancellationDriver...");
 
-    if (args.length != 2) {
+    if (args.length != 1) {
       System.err
-          .println("Usage: MaxCancellationDriver -DAPP_ROOT=<app_root> <input path> <output path>");
+          .println("Usage: MaxCancellationDriver -DAPP_ROOT=<app_root> <input path(s3 url?)>");
       System.exit(-1);
     }
 
@@ -50,8 +52,12 @@ public class MaxCancellationDriver extends Configured implements Tool {
     final String rootDir = config.get("APP_ROOT");
     PropertyConfigurator.configure(rootDir + File.pathSeparator + "log4j.xml");
 
-    final String inputPathDir = args[0] + File.pathSeparator;
-    final String outputPathDir = args[1] + File.pathSeparator;
+    final String inputPathDir = args[0];
+    final String outputPathDir = "/tmp/MaxCancellation-" + System.currentTimeMillis();
+
+    config.set("maprededuce.compress.map.output", "true");
+    config.set("mapreduce.map.output.compression.codec",
+        "org.apache.hadoop.io.compress.SnappyCodec");
 
     // Job Conf
     Job job = new Job(config);
@@ -65,6 +71,9 @@ public class MaxCancellationDriver extends Configured implements Tool {
     job.setMapperClass(MaxCancellationMapper.class);
     job.setCombinerClass(MaxCancellationReducer.class);
     job.setReducerClass(MaxCancellationReducer.class);
+
+    job.setInputFormatClass(TextInputFormat.class);
+    job.setOutputFormatClass(TextOutputFormat.class);
 
     job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(IntWritable.class);
