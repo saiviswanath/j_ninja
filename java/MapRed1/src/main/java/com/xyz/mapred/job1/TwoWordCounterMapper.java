@@ -25,9 +25,9 @@ public class TwoWordCounterMapper extends Mapper<LongWritable, Text, Text, IntWr
       return;
     }
 
-    StringTokenizer lineTokens = new StringTokenizer(line, " ,;"); // TODO: Define all possible
-                                                                   // delimiters in a doc
-    if (lineTokens.hasMoreTokens()) {
+    StringTokenizer lineTokens = new StringTokenizer(line, " ;,"); // TODO: Define all possible
+                                                                 // delimiters in a doc
+    while (lineTokens.hasMoreTokens()) {
       Text inKey = null;
       String token1 = lineTokens.nextToken();
       try {

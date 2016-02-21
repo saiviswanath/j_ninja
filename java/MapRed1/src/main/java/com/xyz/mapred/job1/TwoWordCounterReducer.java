@@ -42,7 +42,7 @@ public class TwoWordCounterReducer extends Reducer<Text, IntWritable, Text, IntW
     }
   }
 
-  private static <K, V extends Comparable<V>> Map<K, V> sortByValues(Map<K, V> map) {
+  private static <K, V extends Comparable<V>> Map<K, V> sortByValues(final Map<K, V> map) {
     Comparator<K> valueComparator = new Comparator<K>() {
       public int compare(K k1, K k2) {
         int compare = map.get(k2).compareTo(map.get(k1));
