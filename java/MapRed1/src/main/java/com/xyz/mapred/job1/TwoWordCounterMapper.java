@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -15,7 +15,7 @@ import org.apache.hadoop.mapreduce.Mapper;
  * @author viswa
  *
  */
-public class TwoWordCounterMapper extends Mapper<LongWritable, Text, CompositeKey, IntWritable> {
+public class TwoWordCounterMapper extends Mapper<LongWritable, Text, CompositeKey, NullWritable> {
   @Override
   protected void map(LongWritable key, Text value, Context context) throws IOException,
       InterruptedException {
@@ -36,7 +36,7 @@ public class TwoWordCounterMapper extends Mapper<LongWritable, Text, CompositeKe
       } catch (NoSuchElementException e) {
         inKey = new CompositeKey(token1 + "#END", 1);
       }
-      context.write(inKey, new IntWritable(1));
+      context.write(inKey, NullWritable.get());
     }
   }
 }

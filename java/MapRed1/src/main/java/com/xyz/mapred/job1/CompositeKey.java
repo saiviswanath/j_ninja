@@ -4,17 +4,24 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
 
-@SuppressWarnings("rawtypes")
-public class CompositeKey implements WritableComparable {
+public class CompositeKey implements Writable, WritableComparable<CompositeKey> {
   private String naturalKey;
   private Integer secondaryKey;
+  
+  public CompositeKey() {}
 
   public CompositeKey(String naturalKey, Integer secondaryKey) {
-    super();
+    //super();
     this.naturalKey = naturalKey;
     this.secondaryKey = secondaryKey;
+  }
+
+  @Override
+  public String toString() {
+    return "CompositeKey [naturalKey=" + naturalKey + ", secondaryKey=" + secondaryKey + "]";
   }
 
   @Override
@@ -30,8 +37,7 @@ public class CompositeKey implements WritableComparable {
   }
 
   @Override
-  public int compareTo(Object o) {
-    CompositeKey comp = (CompositeKey) o;
+  public int compareTo(CompositeKey comp) {
     int result = this.naturalKey.compareTo(comp.naturalKey);
     if (result == 0) {
       return this.secondaryKey.compareTo(comp.secondaryKey);
@@ -54,4 +60,5 @@ public class CompositeKey implements WritableComparable {
   public void setSecondaryKey(Integer secondaryKey) {
     this.secondaryKey = secondaryKey;
   }
+
 }

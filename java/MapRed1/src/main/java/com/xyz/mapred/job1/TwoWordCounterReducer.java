@@ -2,8 +2,7 @@ package com.xyz.mapred.job1;
 
 import java.io.IOException;
 
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 /**
@@ -12,11 +11,14 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @author viswa
  *
  */
-public class TwoWordCounterReducer extends Reducer<CompositeKey, IntWritable, Text, IntWritable> {
+public class TwoWordCounterReducer extends
+    Reducer<CompositeKey, NullWritable, CompositeKey, NullWritable> {
 
   @Override
-  protected void reduce(CompositeKey key, Iterable<IntWritable> values, Context context)
+  protected void reduce(CompositeKey key, Iterable<NullWritable> values, Context context)
       throws IOException, InterruptedException {
-    context.write(new Text(key.getNaturalKey()), new IntWritable(key.getSecondaryKey()));
+    for (NullWritable value : values) {
+      context.write(key, NullWritable.get());
+    }
   }
 }

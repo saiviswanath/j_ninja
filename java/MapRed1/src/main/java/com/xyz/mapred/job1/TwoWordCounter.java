@@ -6,7 +6,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -78,10 +78,10 @@ public class TwoWordCounter extends Configured implements Tool {
     job.setReducerClass(TwoWordCounterReducer.class);
 
     job.setMapOutputKeyClass(CompositeKey.class);
-    job.setMapOutputValueClass(IntWritable.class);
+    job.setMapOutputValueClass(NullWritable.class);
 
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(IntWritable.class);
+    job.setOutputKeyClass(CompositeKey.class);
+    job.setOutputValueClass(NullWritable.class);
 
     job.setPartitionerClass(TwoWordCounterPartitioner.class);
     job.setSortComparatorClass(SortingComparator.class);

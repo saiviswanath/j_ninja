@@ -4,6 +4,10 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
 public class GroupingComparator extends WritableComparator {
+  
+  public GroupingComparator() {
+    super(CompositeKey.class, true);
+  }
 
   @SuppressWarnings("rawtypes")
   @Override
