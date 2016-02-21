@@ -52,7 +52,7 @@ public class MaxCancellationDriver extends Configured implements Tool {
     final String rootDir = config.get("APP_ROOT");
     PropertyConfigurator.configure(rootDir + File.pathSeparator + "log4j.xml");
 
-    final String inputPathDir = args[0];
+    final String localInputPath = args[0];
     final String outputPathDir = "/tmp/MaxCancellation-" + System.currentTimeMillis();
 
     config.set("maprededuce.compress.map.output", "true");
@@ -65,7 +65,7 @@ public class MaxCancellationDriver extends Configured implements Tool {
     job.setJobName("MaxCancellation Job");
 
     // TODO: Modify per req. How to configure for s3 url and iterate the input dir.
-    FileInputFormat.addInputPath(job, new Path(inputPathDir + File.pathSeparator + "2000.csv"));
+    FileInputFormat.addInputPath(job, new Path(localInputPath));
     FileOutputFormat.setOutputPath(job, new Path(outputPathDir));
 
     job.setMapperClass(MaxCancellationMapper.class);

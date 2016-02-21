@@ -7,22 +7,34 @@
 	<name>MapRed1</name>
 	<description>MapRed1</description>
 	<packaging>jar</packaging>
+	<repositories>
+		<repository>
+			<id>cloudera</id>
+			<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.mrunit</groupId>
+			<artifactId>mrunit</artifactId>
+			<version>0.9.0-incubating</version>
+			<classifier>hadoop2</classifier>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-common</artifactId>
-			<version>2.7.2</version>
+			<version>2.6.0-cdh5.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
-			<version>1.2.1</version>
+			<version>2.6.0-mr1-cdh5.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
-			<version>2.7.2</version>
+			<version>2.6.0-mr1-cdh5.5.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -48,7 +60,7 @@
 					<!-- MainClass in mainfest make a executable jar -->
 					<archive>
 						<manifest>
-							<mainClass>com.xyz.mapred.job.MaxCancellationDriver</mainClass>
+							<mainClass>com.xyz.mapred.job1.TwoWordCounter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

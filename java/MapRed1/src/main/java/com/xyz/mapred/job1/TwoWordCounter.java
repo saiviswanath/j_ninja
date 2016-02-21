@@ -77,16 +77,23 @@ public class TwoWordCounter extends Configured implements Tool {
     job.setMapperClass(TwoWordCounterMapper.class);
     job.setReducerClass(TwoWordCounterReducer.class);
 
-    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputKeyClass(CompositeKey.class);
     job.setMapOutputValueClass(IntWritable.class);
 
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);
 
+    job.setPartitionerClass(TwoWordCounterPartitioner.class);
+    job.setSortComparatorClass(SortingComparator.class);
+    job.setGroupingComparatorClass(GroupingComparator.class);
+
     job.setNumReduceTasks(1);
 
     if (job.waitForCompletion(true)) {
-      Path reducerFile = new Path(outputPathDir + "part-r-00000"); // TODO: Validate reducer file
+      Path reducerFile = new Path(outputPathDir + File.pathSeparator + "part-r-00000"); // TODO:
+                                                                                        // Validate
+                                                                                        // reducer
+                                                                                        // file
       // name
       long numBytes = hdfs.getFileStatus(reducerFile).getLen();
       if (numBytes > 0) {

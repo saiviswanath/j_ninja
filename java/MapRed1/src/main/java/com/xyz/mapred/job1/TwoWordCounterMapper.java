@@ -15,7 +15,7 @@ import org.apache.hadoop.mapreduce.Mapper;
  * @author viswa
  *
  */
-public class TwoWordCounterMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class TwoWordCounterMapper extends Mapper<LongWritable, Text, CompositeKey, IntWritable> {
   @Override
   protected void map(LongWritable key, Text value, Context context) throws IOException,
       InterruptedException {
@@ -26,15 +26,15 @@ public class TwoWordCounterMapper extends Mapper<LongWritable, Text, Text, IntWr
     }
 
     StringTokenizer lineTokens = new StringTokenizer(line, " ;,"); // TODO: Define all possible
-                                                                 // delimiters in a doc
+    // delimiters in a doc
     while (lineTokens.hasMoreTokens()) {
-      Text inKey = null;
       String token1 = lineTokens.nextToken();
+      CompositeKey inKey = null;
       try {
         String token2 = lineTokens.nextToken();
-        inKey = new Text(token1 + "#" + token2);
+        inKey = new CompositeKey(token1 + "#" + token2, 1);
       } catch (NoSuchElementException e) {
-        inKey = new Text(token1 + "#" + "END");
+        inKey = new CompositeKey(token1 + "#END", 1);
       }
       context.write(inKey, new IntWritable(1));
     }
