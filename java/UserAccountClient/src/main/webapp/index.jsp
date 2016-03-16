@@ -15,10 +15,7 @@
 			dataType : "json",
 			type : "GET",
 			contentType : "application/json; charSet=UTF-8",
-			url : "http://localhost:9090/useraccount/register/doregister?name="
-				+ document.getElementById("Name") + "&username=" + 
-				document.getElementById("UserName") + "&password=" + 
-				document.getElementById("Password"),
+			url : "http://localhost:9090/useraccount/register/doregister?name=" + $("#Name").val() + "&username=" + $("#UserName").val() + "&password=" + $("#Password").val(),
 			success : function(response) {
 				var tag = response.tag;
 				var status = response.status;
