@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+
+
+<script src="menu.js"></script>
+<style>
+.center-wrapper {
+	text-align: center;
+}
+
+.center-wrapper * {
+	margin: 0 auto;
+}
+</style>
+
+<title>Blank App Designer Project Template</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/UserAccountClient/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet"
+	href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script
+	src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+	function change() {
+		var a = $("#ValueInput").val();
+		$("p").html(a);
+	}
+</script>
+<script>
+	$(document).on("pagecreate", "#OpenSpan", function() {
+		$("p").on("swipe", function() {
+			$("span").text("Swipe detected!");
+		});
+	});
+</script>
+<script>
+	function login() {
+		var name = document.getElementById("fname").value;
+		var pwd = document.getElementById("psw").value;
+		$.ajax({
+			type : "POST",
+			contentType : "application/json; charset=utf-8",
+			url : "http://localhost:9090/useraccount/login/dologin",
+			data : 'username='+ name+'&password='+ pwd, 
+			//'{ "username" : "' + name + '", "password": "' + pwd
+				//	+ '" }', // Results in null QS params at server
+			dataType : "json",
+			success: function(data) {
+				$("#setLoginStatus").html("Hi " + name);
+			},
+			error: function(data) {
+				alert("Login Failed!"); <!--TODO: Fix delay during async-->
+				window.location.replace("#Login");
+			}
+		});
+	}
+	
+	function register() {
+		var name = document.getElementById("webn").value;
+		var uname = document.getElementById("webf").value;
+		var pwd = document.getElementById("webp").value;
+		$.ajax({
+			type : "POST",
+			contentType : "application/json; charset=utf-8",
+			url : "http://localhost:9090/useraccount/register/doregister",
+			data : 'name='+ name+'&username='+ uname+'&password='+ pwd,
+			//'{ "name" : "' + name + '", "username" : "' + uname + '", "password": "' + pwd
+				//	+ '" }', // Results in null QS params at server
+				// http://stackoverflow.com/questions/10357041/jersey-post-method-is-receiving-null-values-as-parameters
+			dataType : "json",
+			success: function(data) {
+				$("#setRegisterStatus").html("Successfully Registered. Please Login");
+			},
+			error: function(data) {
+				alert(data);
+				alert("Registration Failed!"); <!--TODO: Fix delay during async-->
+				window.location.replace("#SignUp");
+			}
+		});
+	}
+	
+	function dataClean() {
+		$("#setRegisterStatus").html("");
+	}
+</script>
+
+<style>
+.bld {
+	font-size: 20px;
+	color: darkorange;
+}
+
+.middle {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+}
+
+.img {
+	width: 100%;
+}
+
+.align {
+	text-align: center;
+}
+</style>
+<!--
+  * The "meta viewport" tag (below) helps your app size appropriately to a device's screen.
+  * Note that the meta viewport approach is being phased out in favor of the @viewport CSS rule.
+  * For a quick overview of both, see this article:
+  *   http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag
+  * To see what happens, try the app on a real device with and without a "meta viewport" tag.
+-->
+
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes, minimum-scale=1, maximum-scale=2"> -->
+
+<style>
+/* following three (cascaded) are equivalent to above three meta viewport statements */
+/* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html */
+/* see http://dev.w3.org/csswg/css-device-adapt/ */
+@
+-ms-viewport {
+	width: 100vw;
+	zoom: 100%;
+}
+
+@
+viewport {
+	width: 100vw;
+	zoom: 100%;
+}
+
+@
+-ms-viewport {
+	user-zoom: fixed;
+}
+
+@
+viewport {
+	user-zoom: fixed;
+}
+/*@-ms-viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }   @viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }*/
+</style>
+
+<link rel="stylesheet" href="css/app.css">
+
+<!-- IMPORTANT: Do not include your weinre script tag as part of your release builds! -->
+<!-- Place your remote debugging (weinre) script URL from the Test tab here, if it does not work below -->
+<!-- <script src="http://debug-software.intel.com/target/target-script-min.js#insertabiglongfunkynumberfromthexdkstesttab"></script> -->
+
+<!-- Most third-party libraries should go here. References (below) are just examples to give you the general idea... -->
+<!-- <script src="lib/mc/hammer.js"></script> -->
+<!-- <script src="lib/ft/fastclick.js"></script> -->
+
+<script src="intelxdk.js"></script>
+<!-- phantom library, needed for Intel XDK "legacy" container api calls -->
+<script src="cordova.js"></script>
+<!-- phantom library, needed for Cordova api calls -->
+<script src="xhr.js"></script>
+<!-- phantom library, needed for Intel XDK "legacy" container CORS -->
+
+<script src="js/app.js"></script>
+<!-- for your event code, see README and file comments for details -->
+<script src="js/init-app.js"></script>
+<!-- for your init code, see README and file comments for details -->
+<script src="xdk/init-dev.js"></script>
+<!-- normalizes device and document ready events, see file for details -->
+</head>
+<body>
+	<!-- Main page -->
+
+	<div data-role="page" id="main" style="background-color: #87CEEB">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>AIG-OpenSpan</h1>
+		</div>
+		<div data-role="main" class="ui-content" onclick="">
+			<a href="#Login" class="ui-btn" onclick="dataClean">Login</a>
+		</div>
+		<div data-role="main" class="ui-content" onclick="">
+			<a href="#SignUp" class="ui-btn">Sign Up</a>
+		</div>
+		<!-- Login  page -->
+	</div>
+	<div data-role="page" id="Login" style="background-color: #87CEEB">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>AIG-OpenSpan</h1>
+			<div id="setRegisterStatus" align="center"></div>
+		</div>
+		<div>
+			<label for="fname">Username</label> <input type="text" name="fname"
+				id="fname" placeholder="Username..."> <label for="psw">Password</label>
+			<input type="password" name="psw" id="psw" placeholder="Password...">
+			<div data-role="main" class="ui-content" onclick="">
+				<a href="#openspan" class="ui-btn" onclick="login()">Sign In</a>
+			</div>
+		</div>
+	</div>
+	<!-- Sign Up page -->
+	<div data-role="page" id="SignUp" style="background-color: #87CEEB">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>AIG-OpenSpan</h1>
+		</div>
+		<div>
+			<label for="name">Full Name</label> <input type="text" name="name"
+				id="webn" placeholder="Full Name...">
+			<label for="fname">User Name</label> <input type="text" name="fname"
+				id="webf" placeholder="User Name..."> <label for="pswd">Password</label>
+			<input type="password" name="pswd" id="webp"
+				placeholder="Password...">
+			<!-- <label for="pswd" > Re-Enter Password</label>
+      <input type="password" name="pswd" id="fname" placeholder="Password..."> -->
+			<div data-role="main" class="ui-content" onclick="">
+				<a href="#Login" class="ui-btn" onclick="register()">Sign Up</a>
+			</div>
+		</div>
+	</div>
+	<!-- OpenSpan Page -->
+	<!--HOME-->
+	<div data-url="panel-responsive-page1" data-role="page"
+		class="jqm-demos ui-responsive-panel" id="openspan"
+		data-title="Panel responsive page">
+		<div data-role="header" style="background-color: #87CEEB">
+		<div id="setLoginStatus" align="right"></div>
+			<h1>Aig-OpenSpan</h1>
+			<a href="#leftpanelhome" data-icon="bars" data-iconpos="notext">Menu</a>
+
+		</div>
+		<div data-role="main" class="ui-content" id="home">
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<a href="#lac" class="ui-btn ui-corner-all ui-shadow"><img
+						id="status" src="image/openspan%20logo.png"> </a>
+					<div class="align">
+						<b class="bld">Automation status</b>
+					</div>
+
+				</div>
+			</div>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a href="#same" class="ui-btn ui-corner-all ui-shadow"><img
+						id="upcomng" src="image/upcumingpjt.jpg" class="img"></a>
+					<div class="align">
+						<b class="bld">upcoming projets</b>
+					</div>
+				</div>
+				<div class="ui-block-b">
+					<a href="#robot" class="ui-btn ui-corner-all ui-shadow"><img
+						id="toady" src="image/robot.jpg" class="img"></a>
+					<div class="align">
+						<b class="bld">Robotic</b>
+					</div>
+				</div>
+			</div>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<a href="#same" class="ui-btn ui-corner-all ui-shadow"><img
+						id="stopper" src="image/Showstopper.png" class="img"></a>
+					<div class="align">
+						<b class="bld">Show stopper</b>
+					</div>
+				</div>
+				<div class="ui-block-b">
+					<a href="#ourteam" class="ui-btn ui-corner-all ui-shadow"><img
+						id="team" src="image/Team.png" class="img"></a>
+					<div class="align">
+						<b class="bld">Our team</b>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="panel" data-display="overlay" data-theme="c"
+			id="leftpanelhome" style="background-color: #C3E7F5">
+			<ul data-role="listview">
+				<br>
+				<br>
+				<br>
+				<li data-icon="arrow-r"><a href="#openspan" data-rel="close">Home</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#lac" data-rel="close">L.A.C</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#cps" data-rel="close">C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#ncps" data-rel="close">N-C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#robot" data-rel="close">ROBOT</a></li>
+				<br>
+			</ul>
+		</div>
+
+	</div>
+	<!--LAC-->
+
+	<div data-url="panel-responsive-page1" data-role="page"
+		class="jqm-demos ui-responsive-panel" id="lac"
+		data-title="Panel responsive page">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#leftpanellac" data-icon="bars" data-iconpos="notext">Menu</a>
+		</div>
+		<div role="main" class="ui-content jqm-content jqm-fullwidth"
+			id="home">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="grid"><a href="#mhome" data-rel="close">MEXICO-HOME</a></li>
+				<br>
+				<li data-icon="grid"><a href="#mhome" data-rel="close">MEXICO-RENEWAL</a></li>
+				<br>
+				<li data-icon="grid"><a href="#argentinahome" data-rel="close">ARGENTINA-HOME</a></li>
+				<br>
+				<li data-icon="grid"><a href="#argentinahome" data-rel="close">AGENTINA-AUTO</a></li>
+				<br>
+				<li data-icon="grid"><a href="#argentinahome" data-rel="close">Brazil
+						OFAC</a></li>
+				<br>
+				<li data-icon="grid"><a href="#triplebooking" data-rel="close">Triple
+						Booking</a></li>
+				<br>
+			</ul>
+		</div>
+		<div data-role="panel" data-display="overlay" data-theme="c"
+			style="background-color: #C3E7F5" id="leftpanellac">
+			<ul data-role="listview">
+				<br>
+				<br>
+				<br>
+				<li data-icon="arrow-r"><a href="#openspan" data-rel="close">Home</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#lac" data-rel="close">L.A.C</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#cps" data-rel="close">C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#ncps" data-rel="close">N-C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#robot" data-rel="close">ROBOT</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!--CPS-->
+
+	<div data-url="panel-responsive-page1" data-role="page"
+		class="jqm-demos ui-responsive-panel" id="cps"
+		data-title="Panel responsive page">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#leftpanelcps" data-icon="bars" data-iconpos="notext">Menu</a>
+
+		</div>
+		<div role="main" class="ui-content jqm-content jqm-fullwidth"
+			id="home">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="grid"><a href="#cpscommercial" data-rel="close">CPS-Commercial</a></li>
+				<br>
+				<li data-icon="grid"><a href="#cpscommercial" data-rel="close">CPS-Central
+						Collect</a></li>
+				<br>
+				<li data-icon="grid"><a href="#cpscommercial" data-rel="close">VIP-Renewals</a></li>
+				<br>
+				<li data-icon="grid"><a href="#cpscommercial" data-rel="close">CPS-Submissions</a></li>
+				<br>
+				<li data-icon="grid"><a href="#cpscommercial" data-rel="close">CPS-Binder
+						process</a></li>
+				<br>
+				<li data-icon="grid"><a href="#cpscommercial" data-rel="close">Quoting-
+						BI </a></li>
+			</ul>
+
+		</div>
+
+		<div data-role="panel" data-display="overlay" data-theme="c"
+			style="background-color: #C3E7F5" id="leftpanelcps">
+			<ul data-role="listview">
+				<br>
+				<br>
+				<br>
+				<li data-icon="arrow-r"><a href="#openspan" data-rel="close">Home</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#lac" data-rel="close">L.A.C</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#cps" data-rel="close">C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#ncps" data-rel="close">N-C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#robot" data-rel="close">ROBOT</a></li>
+				<br>
+			</ul>
+		</div>
+
+	</div>
+	<!--NCPS-->
+
+
+	<div data-url="panel-responsive-page1" data-role="page"
+		class="jqm-demos ui-responsive-panel" id="ncps"
+		data-title="Panel responsive page">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#leftpanelncps" data-icon="bars" data-iconpos="notext">Menu</a>
+
+		</div>
+		<div role="main" class="ui-content jqm-content jqm-fullwidth"
+			id="home">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="grid"><a href="#ew026" data-rel="close">Extended
+						Warranty-026 Travel</a></li>
+				<br>
+				<li data-icon="grid"><a href="#ew026" data-rel="close">103
+						Extended Warranty</a></li>
+				<br>
+				<li data-icon="grid"><a href="#ew026" data-rel="close">026
+						Travel</a></li>
+				<br>
+				<li data-icon="grid"><a href="#ew026" data-rel="close">120
+						Anti Fraud</a></li>
+				<br>
+			</ul>
+		</div>
+
+		<div data-role="panel" data-display="overlay" data-theme="c"
+			style="background-color: #C3E7F5" id="leftpanelncps">
+			<ul data-role="listview">
+				<br>
+				<br>
+				<br>
+				<li data-icon="arrow-r"><a href="#openspan" data-rel="close">Home</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#lac" data-rel="close">L.A.C</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#cps" data-rel="close">C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#ncps" data-rel="close">N-C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#robot" data-rel="close">ROBOT</a></li>
+				<br>
+			</ul>
+		</div>
+
+	</div>
+	<!--upcoming projects-->
+
+	<div data-role="page" id="same">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Openspan Team</h1>
+			<a href="#openspan" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a>
+		</div>
+		<h2>page not updated</h2>
+	</div>
+
+	<!--Robot-->
+	<div data-url="panel-responsive-page1" data-role="page"
+		class="jqm-demos ui-responsive-panel" id="robot"
+		data-title="Panel responsive page">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#leftpanelrobot" data-icon="bars" data-iconpos="notext">Menu</a>
+		</div>
+		<div role="main" class="ui-content jqm-content jqm-fullwidth"
+			id="home">
+			<ul data-role="listview">
+				<li data-icon="calendar"><a href="#log" data-rel="close">UK-Collections</a></li>
+				<br>
+				<li data-icon="calendar"><a href="#log" data-rel="close">commercials</a></li>
+				<br>
+			</ul>
+
+		</div>
+		<div data-role="panel" data-display="overlay" data-theme="c"
+			style="background-color: #C3E7F5" id="leftpanelrobot">
+			<ul data-role="listview">
+				<br>
+				<br>
+				<br>
+				<li data-icon="arrow-r"><a href="#openspan" data-rel="close">Home</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#lac" data-rel="close">L.A.C</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#cps" data-rel="close">C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#ncps" data-rel="close">N-C.P.S</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#robot" data-rel="close">ROBOT</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!--end of main page-->
+	<!--LOG page-->
+	<div data-role="page" id="log">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#robot" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a>
+		</div>
+		<div data-role="main" class="ui-content">
+			<h2 style="color: green;">LOG FILE</h2>
+			<div data-role="collapsible">
+				<h4>Batch Started</h4>
+				<ul data-role="listview">
+					<li><p>DATE-2/18/2016</p></li>
+					<li><p>START TIME-4:32:54 PM</p></li>
+				</ul>
+			</div>
+
+			<div data-role="collapsible">
+				<h4>file opened successfully</h4>
+				<ul data-role="listview">
+					<li><p>DATE-2/18/2016</p></li>
+					<li><p>START TIME-4:32:54 PM</p></li>
+				</ul>
+			</div>
+
+			<div data-role="collapsible">
+				<h4>file(s) created successfully</h4>
+				<ul data-role="listview">
+					<li><p>DATE-2/18/2016</p></li>
+					<li><p>START TIME-4:32:54 PM</p></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!--mexicohome-->
+	<div data-role="page" id="mhome">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#lac" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpanelmhome" data-icon="user"
+				data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="panel" data-position="right" data-theme="c"
+			data-display="overlay" style="background-color: #C3E7F5"
+			id="rightpanelmhome">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Mohamed
+						Emraanullah</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">K Anil
+						kumar reddy</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Selvakumar
+						Senthamilselvam</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!-- Argentina-Home-->
+	<div data-role="page" id="argentinahome">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#lac" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpanelahome" data-icon="user"
+				data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+		<div data-role="panel" data-position="right" data-theme="c"
+			data-display="overlay" style="background-color: #C3E7F5"
+			id="rightpanelahome">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Vamsi
+						Musunuri</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Navya
+						Mathews</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Selvakumar
+						Senthamilselvam</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!--Argentina Auto-->
+	<div data-role="page" id="argentina-auto">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#lac" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpanelaauto" data-icon="user"
+				data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+		<div data-role="panel" data-position="right" data-display="overlay"
+			data-theme="c" style="background-color: #C3E7F5" id="rightpanelaauto">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Vamsi
+						Musunuri</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Navya
+						Mathews</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Selvakumar
+						Senthamilselvam</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!--Brazil OFAC-->
+	<div data-role="page" id="brazil-ofac">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#lac" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpanelbofac" data-icon="user"
+				data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+		<div data-role="panel" data-position="right" data-display="overlay"
+			data-theme="c" style="background-color: #C3E7F5" id="rightpanelbofac">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Vamsi
+						Musunuri</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Navya
+						Mathews</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Selvakumar
+						Senthamilselvam</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+
+	<!--Triple Booking-->
+	<div data-role="page" id="triplebooking">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#lac" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpaneltbook" data-icon="user"
+				data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+		<div data-role="panel" data-position="right" data-display="overlay"
+			data-theme="c" style="background-color: #C3E7F5" id="rightpaneltbook">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Vamsi
+						Musunuri</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Navya
+						Mathews</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Selvakumar
+						Senthamilselvam</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!--CPS collection-->
+
+	<div data-role="page" id="cpscommercial">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#cps" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpanelcpscommercial"
+				data-icon="user" data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+		<div data-role="panel" data-position="right" data-theme="c"
+			data-display="overlay" style="background-color: #C3E7F5"
+			id="rightpanelcpscommercial">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Parvezu
+						Mohammad</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Siva
+						Kumar Ayyapa </a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Govindamma
+						Annapureddy</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!--Extended Warranty-06 Travel-->
+	<div data-role="page" id="ew026">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Aig-OpenSpan</h1>
+			<a href="#ncps" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a> <a href="#rightpanelew026" data-icon="user"
+				data-iconpos="notext">Menu</a>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Start Date,End date</h1>
+				<p>I'm the expanded content.</p>
+			</div>
+		</div>
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Accomplished this week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+
+		<div data-role="main" class="ui-content">
+			<div data-role="collapsible">
+				<h1>Planned for Next Week</h1>
+				<p>I'm the expanded content.</p>
+
+			</div>
+		</div>
+		<div data-role="panel" data-position="right" data-display="overlay"
+			data-theme="c" style="background-color: #C3E7F5" id="rightpanelew026">
+			<ul data-role="listview">
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Sravanthi
+						Pingili</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Abhishek
+						Bollam</a></li>
+				<br>
+				<li data-icon="arrow-r"><a href="#" data-rel="close">Dillesu
+						M</a></li>
+				<br>
+			</ul>
+		</div>
+	</div>
+	<!-- our team-->
+	<div data-role="page" id="ourteam">
+		<div data-role="header" style="background-color: #87CEEB">
+			<h1>Openspan Team</h1>
+			<a href="#openspan" data-icon="arrow-l" data-iconpos="notext"
+				data-role="button"></a>
+		</div>
+		<div data-role="main" class="ui-content">
+
+			<form class="ui-filterable">
+				<input id="myFilter1" data-type="search">
+			</form>
+			<ul data-role="listview" data-filter="true" data-input="#myFilter1"
+				data-autodividers="true" data-inset="true">
+				<li><a href="#">Abhishek</a></li>
+				<li><a href="#">Anil</a></li>
+				<li><a href="#">Ayyappa</a></li>
+				<li><a href="#">Basava</a></li>
+				<li><a href="#Personal">Dillesu</a></li>
+				<li><a href="#">emranuah</a></li>
+				<li><a href="#">Hari</a></li>
+				<li><a href="#">Kaushik</a></li>
+				<li><a href="#">Paravezu</a></li>
+				<li><a href="#">Pradeep</a></li>
+				<li><a href="#">Prasanna</a></li>
+				<li><a href="#">Preet</a></li>
+				<li><a href="#">Ramki</a></li>
+				<li><a href="#">sinivasr</a></li>
+				<li><a href="#">Vamsi</a></li>
+				<li><a href="#">Venkat</a></li>
+			</ul>
+		</div>
+	</div>
+	<!--end of our team-->
+</body>
+</html>

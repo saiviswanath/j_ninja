@@ -2,22 +2,22 @@ package com.prgguru.jersey;
 
 import java.sql.SQLException;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 //Path: http://localhost/<appln-folder-name>/register
 @Path("/register")
 public class Register {
 	// HTTP Get Method
-	@GET 
+	@POST
 	// Path: http://localhost/<appln-folder-name>/register/doregister
 	@Path("/doregister")  
 	// Produces JSON as response
 	@Produces(MediaType.APPLICATION_JSON) 
 	// Query parameters are parameters: http://localhost/<appln-folder-name>/register/doregister?name=pqrs&username=abc&password=xyz
-	public String doLogin(@QueryParam("name") String name, @QueryParam("username") String uname, @QueryParam("password") String pwd){
+	public String doLogin(@FormParam("name") String name, @FormParam("username") String uname, @FormParam("password") String pwd){
 		String response = "";
 		//System.out.println("Inside doLogin "+uname+"  "+pwd);
 		int retCode = registerUser(name, uname, pwd);
@@ -36,6 +36,7 @@ public class Register {
 	
 	private int registerUser(String name, String uname, String pwd){
 		System.out.println("Inside checkCredentials");
+		System.out.println("Name: " + name + ", uname: " + uname);
 		int result = 3;
 		if(Utitlity.isNotNull(uname) && Utitlity.isNotNull(pwd)){
 			try {
