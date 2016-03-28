@@ -1,12 +1,13 @@
 package com.prgguru.jersey.dao;
 
+import com.prgguru.jersey.DBEnum;
+
 public abstract class DAOFactory {
-	public static final int MYSQL = 1;
 
 	public abstract UserAccountDAO getUserAccountDAO();
 
-	public static DAOFactory getDAOFactory(int whichFactory) {
-		switch (whichFactory) {
+	public static DAOFactory getDAOFactory(DBEnum db) {
+		switch (db) {
 		case MYSQL:
 			return new MYSQLDAOFactory();
 		default:

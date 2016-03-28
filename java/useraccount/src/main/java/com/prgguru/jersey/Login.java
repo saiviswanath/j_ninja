@@ -12,7 +12,7 @@ import com.prgguru.jersey.dao.UserAccountDAO;
 //Path: http://localhost/<appln-folder-name>/login
 @Path("/login")
 public class Login {
-	private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+	private DAOFactory daoFactory = DAOFactory.getDAOFactory(DBEnum.MYSQL);
 	private UserAccountDAO dao = daoFactory.getUserAccountDAO();
 
 	// HTTP Post Method
