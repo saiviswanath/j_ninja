@@ -1,5 +1,7 @@
 package com.prgguru.jersey;
 
+import java.sql.SQLException;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,7 +29,7 @@ public class Register {
 			@FormParam("password") String pwd) {
 		String response = "";
 		// System.out.println("Inside doLogin "+uname+"  "+pwd);
-		int retCode = dao.registerUser(name, uname, pwd);
+		int retCode = registerUser(name, uname, pwd);
 		if (retCode == 0) {
 			response = Utitlity.constructJSON("register", true);
 		} else if (retCode == 1) {
@@ -45,9 +47,43 @@ public class Register {
 
 	}
 
+	private int registerUser(String name, String uname, String pwd) {
+		System.out.println("Inside checkCredentials");
+		int result = 3;
+		if (Utitlity.isNotNull(uname) && Utitlity.isNotNull(pwd)) {
+			try {
+				if (dao.insertUser(name, uname, pwd)) {
+					System.out.println("RegisterUSer if");
+					result = 0;
+				}
+			} catch (SQLException sqle) {
+				System.out.println("RegisterUSer catch sqle");
+				// When Primary key violation occurs that means user is already
+				// registered
+				if (sqle.getErrorCode() == 1062) {
+					result = 1;
+				}
+				// When special characters are used in name,username or password
+				else if (sqle.getErrorCode() == 1064) {
+					System.out.println(sqle.getErrorCode());
+					result = 2;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println("Inside checkCredentials catch e ");
+				result = 3;
+			}
+		} else {
+			System.out.println("Inside checkCredentials else");
+			result = 3;
+		}
+
+		return result;
+	}
+
 	public static void main(String... args) {
-		UserAccountDAO dao = new UserAccountDaoImpl();
-		dao.registerUser("shanti", "shanti", "shanti");
+		Register r = new Register();
+		r.registerUser("shanti", "shanti", "shanti");
 	}
 
 }

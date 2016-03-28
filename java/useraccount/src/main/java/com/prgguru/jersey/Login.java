@@ -25,12 +25,32 @@ public class Login {
 	public String doLogin(@FormParam("username") String uname,
 			@FormParam("password") String pwd) {
 		String response = "";
-		if (dao.checkCredentials(uname, pwd)) {
+		if (checkCredentials(uname, pwd)) {
 			response = Utitlity.constructJSON("login", true);
 		} else {
 			response = Utitlity.constructJSON("login", false,
 					"Incorrect Email or Password");
 		}
 		return response;
+	}
+	
+	private boolean checkCredentials(String uname, String pwd) {
+		System.out.println("Inside checkCredentials");
+		boolean result = false;
+		if (Utitlity.isNotNull(uname) && Utitlity.isNotNull(pwd)) {
+			try {
+				result = dao.checkLogin(uname, pwd);
+				// System.out.println("Inside checkCredentials try "+result);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				// System.out.println("Inside checkCredentials catch");
+				result = false;
+			}
+		} else {
+			// System.out.println("Inside checkCredentials else");
+			result = false;
+		}
+
+		return result;
 	}
 }

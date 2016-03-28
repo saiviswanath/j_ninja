@@ -1,66 +1,109 @@
 package com.prgguru.jersey.dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.prgguru.jersey.DBConnection;
-import com.prgguru.jersey.Utitlity;
 
 public class UserAccountDaoImpl implements UserAccountDAO {
 
+	/**
+	 * Method to check whether uname and pwd combination are correct
+	 * 
+	 * @param uname
+	 * @param pwd
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
-	public boolean checkCredentials(String uname, String pwd) {
-		System.out.println("Inside checkCredentials");
-		boolean result = false;
-		if (Utitlity.isNotNull(uname) && Utitlity.isNotNull(pwd)) {
+	public boolean checkLogin(String uname, String pwd) throws Exception {
+		boolean isUserAvailable = false;
+		Connection dbConn = null;
+		try {
 			try {
-				result = DBConnection.checkLogin(uname, pwd);
-				// System.out.println("Inside checkCredentials try "+result);
+				dbConn = DBConnection.createConnection();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				// System.out.println("Inside checkCredentials catch");
-				result = false;
+				e.printStackTrace();
 			}
-		} else {
-			// System.out.println("Inside checkCredentials else");
-			result = false;
+			Statement stmt = dbConn.createStatement();
+			System.out.println("select the DB");
+			String query = "SELECT * FROM user WHERE username = '" + uname
+					+ "' AND password=" + "'" + pwd + "'";
+			// System.out.println(query);
+			ResultSet rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				System.out.println(rs.getString(1) + rs.getString(2)
+						+ rs.getString(3));
+				isUserAvailable = true;
+			}
+		} catch (SQLException sqle) {
+			throw sqle;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			if (dbConn != null) {
+				dbConn.close();
+			}
+			throw e;
+		} finally {
+			if (dbConn != null) {
+				dbConn.close();
+			}
 		}
-
-		return result;
+		return isUserAvailable;
 	}
 
+	/**
+	 * Method to insert uname and pwd in DB
+	 * 
+	 * @param name
+	 * @param uname
+	 * @param pwd
+	 * @return
+	 * @throws SQLException
+	 * @throws Exception
+	 */
 	@Override
-	public int registerUser(String name, String uname, String pwd) {
-		System.out.println("Inside checkCredentials");
-		int result = 3;
-		if (Utitlity.isNotNull(uname) && Utitlity.isNotNull(pwd)) {
+	public boolean insertUser(String name, String uname, String pwd)
+			throws SQLException, Exception {
+		boolean insertStatus = false;
+		Connection dbConn = null;
+		try {
 			try {
-				if (DBConnection.insertUser(name, uname, pwd)) {
-					System.out.println("RegisterUSer if");
-					result = 0;
-				}
-			} catch (SQLException sqle) {
-				System.out.println("RegisterUSer catch sqle");
-				// When Primary key violation occurs that means user is already
-				// registered
-				if (sqle.getErrorCode() == 1062) {
-					result = 1;
-				}
-				// When special characters are used in name,username or password
-				else if (sqle.getErrorCode() == 1064) {
-					System.out.println(sqle.getErrorCode());
-					result = 2;
-				}
+				dbConn = DBConnection.createConnection();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				System.out.println("Inside checkCredentials catch e ");
-				result = 3;
+				e.printStackTrace();
 			}
-		} else {
-			System.out.println("Inside checkCredentials else");
-			result = 3;
+			Statement stmt = dbConn.createStatement();
+			String query = "INSERT into user(name, username, password) values('"
+					+ name + "'," + "'" + uname + "','" + pwd + "')";
+			// System.out.println(query);
+			int records = stmt.executeUpdate(query);
+			// System.out.println(records);
+			// When record is successfully inserted
+			if (records > 0) {
+				insertStatus = true;
+			}
+		} catch (SQLException sqle) {
+			// sqle.printStackTrace();
+			throw sqle;
+		} catch (Exception e) {
+			// e.printStackTrace();
+			// TODO Auto-generated catch block
+			if (dbConn != null) {
+				dbConn.close();
+			}
+			throw e;
+		} finally {
+			if (dbConn != null) {
+				dbConn.close();
+			}
 		}
+		return insertStatus;
 
-		return result;
 	}
 
 }
