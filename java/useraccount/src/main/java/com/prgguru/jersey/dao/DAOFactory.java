@@ -2,6 +2,11 @@ package com.prgguru.jersey.dao;
 
 import com.prgguru.jersey.DBEnum;
 
+/**
+ * Ref: http://www.oracle.com/technetwork/java/dataaccessobject-138824.html
+ * @author viswa
+ *
+ */
 public abstract class DAOFactory {
 
 	public abstract UserAccountDAO getUserAccountDAO();
