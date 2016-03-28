@@ -8,13 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.prgguru.jersey.dao.DAOFactory;
 import com.prgguru.jersey.dao.UserAccountDAO;
-import com.prgguru.jersey.dao.UserAccountDaoImpl;
 
 //Path: http://localhost/<appln-folder-name>/register
 @Path("/register")
 public class Register {
-	private UserAccountDAO dao = new UserAccountDaoImpl();
+	private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+	private UserAccountDAO dao = daoFactory.getUserAccountDAO();
 
 	// HTTP Post Method
 	@POST

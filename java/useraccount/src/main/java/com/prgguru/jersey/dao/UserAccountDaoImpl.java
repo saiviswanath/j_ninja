@@ -23,7 +23,7 @@ public class UserAccountDaoImpl implements UserAccountDAO {
 		Connection dbConn = null;
 		try {
 			try {
-				dbConn = DBConnection.createConnection();
+				dbConn = MYSQLDAOFactory.createConnection();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -72,7 +72,7 @@ public class UserAccountDaoImpl implements UserAccountDAO {
 		Connection dbConn = null;
 		try {
 			try {
-				dbConn = DBConnection.createConnection();
+				dbConn = MYSQLDAOFactory.createConnection();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

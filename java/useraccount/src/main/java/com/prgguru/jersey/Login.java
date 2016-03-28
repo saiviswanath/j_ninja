@@ -6,13 +6,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.prgguru.jersey.dao.DAOFactory;
 import com.prgguru.jersey.dao.UserAccountDAO;
-import com.prgguru.jersey.dao.UserAccountDaoImpl;
 
 //Path: http://localhost/<appln-folder-name>/login
 @Path("/login")
 public class Login {
-	private UserAccountDAO dao = new UserAccountDaoImpl();
+	private DAOFactory daoFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+	private UserAccountDAO dao = daoFactory.getUserAccountDAO();
 
 	// HTTP Post Method
 	@POST
@@ -33,7 +34,7 @@ public class Login {
 		}
 		return response;
 	}
-	
+
 	private boolean checkCredentials(String uname, String pwd) {
 		System.out.println("Inside checkCredentials");
 		boolean result = false;

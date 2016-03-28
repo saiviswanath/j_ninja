@@ -1,9 +1,17 @@
-package com.prgguru.jersey;
+package com.prgguru.jersey.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class DBConnection {
+import com.prgguru.jersey.Constants;
+
+public class MYSQLDAOFactory extends DAOFactory {
+
+	@Override
+	public UserAccountDAO getUserAccountDAO() {
+		return new UserAccountDaoImpl();
+	}
+
 	/**
 	 * Method to create DB Connection
 	 * 
@@ -11,7 +19,7 @@ public class DBConnection {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("finally")
-	public static Connection createConnection() throws Exception {
+	public static Connection createConnection() {
 		Connection con = null;
 		try {
 			Class.forName(Constants.dbClass);
@@ -23,5 +31,7 @@ public class DBConnection {
 		} finally {
 			return con;
 		}
+
 	}
+
 }
