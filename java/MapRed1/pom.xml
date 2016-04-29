@@ -60,7 +60,7 @@
 					<!-- MainClass in mainfest make a executable jar -->
 					<archive>
 						<manifest>
-							<mainClass>com.xyz.mapred.job1.TwoWordCounter</mainClass>
+							<mainClass>com.xyz.mapred.job3.Driver</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
