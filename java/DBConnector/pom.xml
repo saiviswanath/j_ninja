@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>DBConnector</groupId>
 	<artifactId>DBConnector</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-mysql</version>
 	<name>DBConnector</name>
 	<description>DBConnector</description>
 	<packaging>jar</packaging>
@@ -20,6 +20,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency>
+		<dependency>
 			<!-- mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 
 				-Dversion=11.2.0.2.0 -Dpackaging=jar -Dfile=C:\oraclexe\app\oracle\product\11.2.0\server\jdbc\lib\ojdbc6_g.jar 
 				-DgeneratePom=true -->
@@ -33,14 +38,14 @@
 			<version>6.0.16</version>
 			<scope>test</scope>
 			<exclusions>
- 				<exclusion>
+				<exclusion>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>annotations-api</artifactId>
-				</exclusion> 
+				</exclusion>
 			</exclusions>
 		</dependency>
 

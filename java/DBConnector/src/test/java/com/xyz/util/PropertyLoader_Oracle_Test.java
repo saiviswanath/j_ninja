@@ -9,7 +9,6 @@ import org.junit.Test;
 
 public class PropertyLoader_Oracle_Test {
 
-  @Test
   public void testGetProperties() {
     Properties props = PropertyLoader.getProperties();
     assertNotNull(props);

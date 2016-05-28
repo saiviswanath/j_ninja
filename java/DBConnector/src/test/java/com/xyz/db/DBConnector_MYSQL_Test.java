@@ -20,8 +20,6 @@ import javax.naming.NamingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import oracle.jdbc.pool.OracleConnectionPoolDataSource;
-
 import org.hamcrest.core.IsEqual;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,15 +30,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+
 /**
  * Ref: https://blogs.oracle.com/randystuph/entry/injecting_jndi_datasources_for_junit
  * 
  * @author viswa
  *
  */
-public class DBConnector_Oracle_Test {
+public class DBConnector_MYSQL_Test {
   private static InitialContext context;
-  private static OracleConnectionPoolDataSource ds;
+  private static MysqlConnectionPoolDataSource ds;
   private static String dsName;
 
   @Rule
@@ -55,7 +55,7 @@ public class DBConnector_Oracle_Test {
     System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
     context = new InitialContext();
 
-    ds = new OracleConnectionPoolDataSource();
+    ds = new MysqlConnectionPoolDataSource();
     DocumentBuilder builder = builderFactory.newDocumentBuilder();
     Document document = builder.parse(new FileInputStream(createContextFile()));
     Node resourceNode = document.getElementsByTagName("Resource").item(0);
@@ -77,13 +77,14 @@ public class DBConnector_Oracle_Test {
   @AfterClass
   public static void tearDownAfterClass() throws Exception {}
 
+  @Test
   public void testGetDBConnection() {
     // Test if we are able to look up JNDI for DataSource object and
     // get back successful connection
     Connection con = DBConnector.getDBConnection();
     assertNotNull(con);
 
-    try (PreparedStatement stmt = con.prepareStatement("select 1 from dual")) {
+    try (PreparedStatement stmt = con.prepareStatement("select 1")) {
       ResultSet rs = stmt.executeQuery();
       assertNotNull(rs);
       assertTrue(rs.next());
@@ -103,6 +104,7 @@ public class DBConnector_Oracle_Test {
     assertNotNull(con2);
   }
 
+  @Test
   public void testGetDBConnectionOnUnbind() {
     DBConnector.clean(); // For fresh JNDI lookup
     try {
@@ -115,6 +117,7 @@ public class DBConnector_Oracle_Test {
     DBConnector.getDBConnection();
   }
 
+  @Test
   public void testGetDBConnectionOnNullDataSource() {
     DBConnector.clean(); // For fresh JNDI lookup
     ds = null;
@@ -142,14 +145,14 @@ public class DBConnector_Oracle_Test {
       StringBuilder sb = new StringBuilder();
       sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
       sb.append("<Context>");
-      sb.append("<Resource name=\"jdbc/XE\" ");
+      sb.append("<Resource name=\"jdbc/collegeDB\" ");
       sb.append("auth=\"Container\" ");
       sb.append("type=\"javax.sql.DataSource\" ");
-      sb.append("username=\"hr\" ");
-      sb.append("password=\"hr\" ");
-      sb.append("driverClassName=\"oracle.jdbc.OracleDriver\" ");
-      sb.append("url=\"jdbc:oracle:thin:@//localhost:1521/XE\" ");
-      sb.append("validationQuery=\"SELECT 1 from dual\" ");
+      sb.append("username=\"collegeDBUser\" ");
+      sb.append("password=\"foobar\" ");
+      sb.append("driverClassName=\"com.mysql.jdbc.Driver\" ");
+      sb.append("url=\"jdbc:mysql://localhost:3306/collegeDB\" ");
+      sb.append("validationQuery=\"SELECT 1\" ");
       sb.append("testOnBorrow=\"true\" ");
       sb.append("maxActive=\"10\" ");
       sb.append("maxIdle=\"5\"/>");
