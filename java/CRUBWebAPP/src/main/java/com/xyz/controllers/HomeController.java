@@ -94,15 +94,26 @@ public class HomeController {
 			return new ModelAndView("updateInputForm");
 		}
 
-		ModelAndView mav = new ModelAndView("fetchUpdateFormDetails",
-				"student", studentDtoToFormBeanConverter(studentDao.findByName(
-						updateInputBean.getFirstName(),
-						updateInputBean.getLastName())));
-		return mav;
+		int studentId = studentDao.findStudentIdByName(
+				updateInputBean.getFirstName(), updateInputBean.getLastName());
+
+		if (studentId == 0) {
+			ModelAndView mav = new ModelAndView("updateInputForm");
+			mav.addObject("ErrorMessage", "No records Found");
+			return mav;
+		} else {
+			Student studentDto = studentDao.findByName(
+					updateInputBean.getFirstName(),
+					updateInputBean.getLastName());
+			return new ModelAndView("fetchUpdateFormDetails", "student",
+					studentDtoToFormBeanConverter(studentDto));
+		}
 	}
 
 	private com.xyz.form.beans.Student studentDtoToFormBeanConverter(
 			Student studentDto) {
+		System.out.println("*************************************"
+				+ studentDto.toString());
 		com.xyz.form.beans.Student student = new com.xyz.form.beans.Student();
 		student.setFirstName(studentDto.getFirstName());
 		student.setLastName(studentDto.getLastName());
@@ -163,9 +174,34 @@ public class HomeController {
 							student.getFirstName(), student.getLastName())));
 			return mav;
 		}
-		System.out.println("**************************" + student);
 		studentDao.updateStudent(studentFormBeanToDtoConverter(student));
 		ModelAndView mav = new ModelAndView("home");
 		return mav;
+	}
+
+	@RequestMapping(value = "/deleteInputForm.do", method = RequestMethod.GET)
+	public ModelAndView deleteInputForm() {
+		ModelAndView mav = new ModelAndView("deleteFormPage",
+				"updateInputBean", new UpdateInputBean());
+		return mav;
+	}
+
+	@RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.GET)
+	public ModelAndView deleteFormDetails(
+			@Valid @ModelAttribute UpdateInputBean updateInputBean,
+			BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ModelAndView("deleteFormPage");
+		}
+		boolean deletedRecord = studentDao.deteteStudentByName(
+				updateInputBean.getFirstName(), updateInputBean.getLastName());
+		if (deletedRecord) {
+			return new ModelAndView("home");
+		} else {
+			ModelAndView mav = new ModelAndView("deleteFormPage");
+			mav.addObject("ErrorMessage", "No records Found");
+			return mav;
+		}
+
 	}
 }

@@ -12,4 +12,6 @@ public interface StudentDAO {
 	public void createStudent(Student student);
 	public Student findByName(String firstName, String lastName);
 	public void updateStudent(Student student);
+	public boolean deteteStudentByName(String firstName, String lastName);
+	public int findStudentIdByName(String firstName, String lastName);
 }

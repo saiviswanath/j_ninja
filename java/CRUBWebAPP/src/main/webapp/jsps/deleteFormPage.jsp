@@ -15,10 +15,10 @@
 	</div>
 	<div id="body">
 		<h3>
-			<c:out value="Enter User Name Details to update: " />
+			<c:out value="Enter User Name Details to delete: " />
 		</h3>
 		<s:form method="GET" commandName="updateInputBean"
-			action="./fetchUpdateFormDetails.do">
+			action="./deleteFormDetails.do">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<table>
 				<tr>
@@ -32,12 +32,10 @@
 					<td><s:errors path="lastName" cssClass="error" /></td>
 				</tr>
 			</table>
-			<input type="submit" value="FetchUpdateForm" />
+			<input type="submit" value="delete" />
 		</s:form>
 	</div>
-	<div id="messageDisplay">
-		${ErrorMessage}
-	</div>
+	<div id="messageDisplay">${ErrorMessage}</div>
 	<div id="footer">
 		<%@ include file="footerinclude.jsp"%>
 	</div>

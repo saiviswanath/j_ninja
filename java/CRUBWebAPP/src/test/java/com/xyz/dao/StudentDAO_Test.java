@@ -64,4 +64,11 @@ public class StudentDAO_Test {
 		student.setCourses(Arrays.asList("Computers"));
 		studentDao.updateStudent(student);
 	}
+	
+	@Test
+	public void testDeleteStudentByName() throws Exception {
+		String firstName = "Viswanath";
+		String lastName = "Palaparthi";
+		studentDao.deteteStudentByName(firstName, lastName);
+	}
 }

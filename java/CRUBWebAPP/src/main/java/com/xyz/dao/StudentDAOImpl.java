@@ -198,7 +198,7 @@ public class StudentDAOImpl implements StudentDAO {
 
 	private void insertIntoStuCourseMappingWithStudIdAndCourses(
 			Connection connection, int studentId, List<String> courses)
-			throws SQLException {
+					throws SQLException {
 		List<Integer> courseIds = findCourseIdsByCourseNames(courses);
 		String insertStuCourseMappingSql = "insert into student_course_mapping(StudentId, "
 				+ "CourseId) values(?, ?)";
@@ -213,7 +213,7 @@ public class StudentDAOImpl implements StudentDAO {
 
 	private void deleteFromStuCourseMappingWithStudIdAndCourses(
 			Connection connection, int studentId, List<String> courses)
-			throws SQLException {
+					throws SQLException {
 		List<Integer> courseIds = findCourseIdsByCourseNames(courses);
 		String deleteStuCourseMappingSql = "delete from student_course_mapping where studentId=? and courseId=?";
 		PreparedStatement deleteStuCourseMappingStmt = connection
@@ -223,6 +223,27 @@ public class StudentDAOImpl implements StudentDAO {
 			deleteStuCourseMappingStmt.setInt(2, courseId);
 			deleteStuCourseMappingStmt.executeUpdate();
 		}
+	}
+
+	public int findStudentIdByName(String firstName, String lastName) {
+		String retrieveStudentIdSql = "select studentId from Student where firstName=? and lastName=?";
+		int studentId = 0;
+		try (Connection connection = DBConnector.getDBConnection()) {
+			PreparedStatement retrieveStudentIdStmt = connection
+					.prepareStatement(retrieveStudentIdSql);
+			retrieveStudentIdStmt.setString(1, firstName);
+			retrieveStudentIdStmt.setString(2, lastName);
+			ResultSet rs = retrieveStudentIdStmt.executeQuery();
+			if (rs != null) {
+				while (rs.next()) {
+					studentId = rs.getInt(1);
+					break; // Treating firstname and lastname as unique record
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("Error executing sql" + retrieveStudentIdSql, e);
+		}
+		return studentId;
 	}
 
 	@Override
@@ -245,19 +266,8 @@ public class StudentDAOImpl implements StudentDAO {
 			stmt.setString(9, student.getLastName());
 			stmt.executeUpdate();
 
-			String retrieveStudentIdSql = "select studentId from Student where firstName=? and lastName=?";
-			PreparedStatement retrieveStudentIdStmt = connection
-					.prepareStatement(retrieveStudentIdSql);
-			retrieveStudentIdStmt.setString(1, student.getFirstName());
-			retrieveStudentIdStmt.setString(2, student.getLastName());
-			ResultSet rs = retrieveStudentIdStmt.executeQuery();
-			int studentId = 0;
-			if (rs != null) {
-				while (rs.next()) {
-					studentId = rs.getInt(1);
-					break; // Treating firstname and lastname as unique record
-				}
-			}
+			int studentId = findStudentIdByName(student.getFirstName(),
+					student.getLastName());
 
 			List<String> currentCourses = student.getCourses();
 			List<String> coursesInDB = findCoursesByStudentId(studentId);
@@ -308,6 +318,44 @@ public class StudentDAOImpl implements StudentDAO {
 				logger.error("Error closing connection", e);
 			}
 		}
+	}
+
+	@Override
+	public boolean deteteStudentByName(String firstName, String lastName) {
+		Connection connection = null;
+		try {
+			connection = DBConnector.getDBConnection();
+			connection.setAutoCommit(false);
+
+			int studentId = findStudentIdByName(firstName, lastName);
+			if (studentId == 0) {
+				return false;
+			}
+			List<String> courses = findCoursesByStudentId(studentId);
+			deleteFromStuCourseMappingWithStudIdAndCourses(connection,
+					studentId, courses);
+
+			String sql = "delete from Student where studentId=?";
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setInt(1, studentId);
+			stmt.executeUpdate();
+
+			connection.commit();
+		} catch (SQLException e) {
+			logger.error("Error deleting student record", e);
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				logger.error("Error rolling back transaction", e);
+			}
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				logger.error("Error closing connection", e);
+			}
+		}
+		return true;
 	}
 
 }

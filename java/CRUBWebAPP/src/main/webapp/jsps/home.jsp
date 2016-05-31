@@ -16,7 +16,7 @@
 						Student</a></td>
 				<td><a href="<c:url value="./updateInputForm.do"/>">Update
 						Student</a></td>
-				<td><a href="<c:url value="./deletStudentPage.do"/>">Delete
+				<td><a href="<c:url value="./deleteInputForm.do"/>">Delete
 						Student</a></td>
 			</tr>
 		</table>
