@@ -17,7 +17,7 @@
 		<h3>
 			<c:out value="Enter User Name Details to delete: " />
 		</h3>
-		<s:form method="GET" commandName="updateInputBean"
+		<s:form method="DELETE" commandName="updateInputBean"
 			action="./deleteFormDetails.do">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<table>
@@ -32,6 +32,7 @@
 					<td><s:errors path="lastName" cssClass="error" /></td>
 				</tr>
 			</table>
+			<input type="hidden" name="_method" value="DELETE" />
 			<input type="submit" value="delete" />
 		</s:form>
 	</div>

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-	<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-	<%@taglib uri="http://www.springframework.org/tags/form" prefix="s" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="s"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,37 +11,36 @@
 <body>
 	<div id="header">
 		<%@ include file="headerinclude.jsp"%>
-		<a href="<c:url value="./updateInputForm.do"/>">Update
-						Student</a>
+		<a href="<c:url value="./updateInputForm.do"/>">Update Student</a>
 	</div>
 	<h3>
 		<c:out value="Update Student Details: " />
 	</h3>
 	<div id="body">
-		<s:form action="./updateStudentDetails.do" method="POST"
+		<s:form action="./updateStudentDetails.do" method="PUT"
 			commandName="student">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<table id="student-table" cellspacing="1" cellpadding="1">
 				<tr>
 					<td><s:label path="firstName">First Name</s:label></td>
-					<td><s:input path="firstName" readonly="true"/></td>
+					<td><s:input path="firstName" readonly="true" /></td>
 					<td><s:errors path="firstName" cssClass="error" /></td>
 				</tr>
 				<tr>
 					<td><s:label path="lastName">Last Name</s:label></td>
-					<td><s:input path="lastName" readonly="true"/></td>
+					<td><s:input path="lastName" readonly="true" /></td>
 					<td><s:errors path="lastName" cssClass="error" /></td>
 				</tr>
 				<tr>
 					<td><s:label path="gender">Gender</s:label></td>
-					<td><s:radiobutton path="gender" value="Male" />Male
-					<s:radiobutton path="gender" value="Female" />Female
-					<s:radiobutton path="gender" value="Other" />Other</td>
+					<td><s:radiobutton path="gender" value="Male" />Male <s:radiobutton
+							path="gender" value="Female" />Female <s:radiobutton
+							path="gender" value="Other" />Other</td>
 					<td><s:errors path="gender" cssClass="error" /></td>
 				</tr>
 				<tr>
 					<td><s:label path="DOB">DOB</s:label></td>
-					<td><s:input path="DOB" id="datepicker"/></td>
+					<td><s:input path="DOB" id="datepicker" /></td>
 					<td><s:errors path="DOB" cssClass="error" /></td>
 				</tr>
 				<tr>
@@ -89,6 +88,7 @@
 					<td><s:errors path="address.pin" cssClass="error" /></td>
 				</tr>
 			</table>
+			<input type="hidden" name="_method" value="PUT" />
 			<input type="submit" value="Update" />
 		</s:form>
 	</div>

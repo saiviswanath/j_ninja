@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,10 +164,10 @@ public class HomeController {
 		return studentDto;
 	}
 
-	@RequestMapping(value = "/updateStudentDetails.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateStudentDetails.do", method = RequestMethod.PUT)
 	public ModelAndView updateStudentDetails(
 			@Valid @ModelAttribute com.xyz.form.beans.Student student,
-			BindingResult bindingResult) {
+			BindingResult bindingResult, final HttpServletResponse res) {
 		if (bindingResult.hasErrors()) {
 			ModelAndView mav = new ModelAndView("fetchUpdateFormDetails",
 					"student",
@@ -175,6 +176,7 @@ public class HomeController {
 			return mav;
 		}
 		studentDao.updateStudent(studentFormBeanToDtoConverter(student));
+		res.setHeader("Cache-Control", "no-cache");
 		ModelAndView mav = new ModelAndView("home");
 		return mav;
 	}
@@ -186,16 +188,17 @@ public class HomeController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.DELETE)
 	public ModelAndView deleteFormDetails(
 			@Valid @ModelAttribute UpdateInputBean updateInputBean,
-			BindingResult bindingResult) {
+			BindingResult bindingResult, final HttpServletResponse res) {
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView("deleteFormPage");
 		}
 		boolean deletedRecord = studentDao.deteteStudentByName(
 				updateInputBean.getFirstName(), updateInputBean.getLastName());
 		if (deletedRecord) {
+			res.setHeader("Cache-Control", "no-cache");
 			return new ModelAndView("home");
 		} else {
 			ModelAndView mav = new ModelAndView("deleteFormPage");
