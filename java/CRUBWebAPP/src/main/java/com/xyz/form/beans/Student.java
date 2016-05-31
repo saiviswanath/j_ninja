@@ -26,6 +26,15 @@ public class Student {
 	private String mobileNumber;
 	@ListNotEmpty
 	private List<String> courses;
+
+	@Override
+	public String toString() {
+		return "Student [firstName=" + firstName + ", lastName=" + lastName
+				+ ", gender=" + gender + ", DOB=" + DOB + ", email=" + email
+				+ ", mobileNumber=" + mobileNumber + ", courses=" + courses
+				+ ", address=" + address + "]";
+	}
+
 	@Valid
 	private Address address;
 

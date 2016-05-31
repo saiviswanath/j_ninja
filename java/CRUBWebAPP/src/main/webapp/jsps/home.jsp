@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="pragma" content="no-cache" />
 <title>Home</title>
 </head>
 <body>
@@ -14,7 +14,7 @@
 			<tr>
 				<td><a href="<c:url value="./newStudentPage.do"/>">New
 						Student</a></td>
-				<td><a href="<c:url value="./updateStudentPage.do"/>">Update
+				<td><a href="<c:url value="./updateInputForm.do"/>">Update
 						Student</a></td>
 				<td><a href="<c:url value="./deletStudentPage.do"/>">Delete
 						Student</a></td>

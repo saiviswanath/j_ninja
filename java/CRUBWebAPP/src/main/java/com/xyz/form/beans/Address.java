@@ -28,6 +28,12 @@ public class Address {
 		return street;
 	}
 
+	@Override
+	public String toString() {
+		return "Address [houseNo=" + houseNo + ", street=" + street + ", area="
+				+ area + ", city=" + city + ", pin=" + pin + "]";
+	}
+
 	public void setStreet(String street) {
 		this.street = street;
 	}

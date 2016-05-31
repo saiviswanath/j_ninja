@@ -122,7 +122,6 @@ public class StudentDAOImpl implements StudentDAO {
 		Connection connection = DBConnector.getDBConnection();
 		try {
 			connection.setAutoCommit(false);
-				System.out.println("@@@@@@@@@@@@@@@@@@@@@@"+ student.getDOB() +"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 			String studentInsertSql = "insert into Student(FirstName, LastName, Gender, DOB, Email, "
 					+ "mobilenumber, Address) values(?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement studentInsertStmt = connection
@@ -146,18 +145,9 @@ public class StudentDAOImpl implements StudentDAO {
 					studentId = rs.getInt(1);
 				}
 			}
-		
-			List<Integer> courseIds = findCourseIdsByCourseNames(student
-					.getCourses());
-			String insertStuCourseMappingSql = "insert into student_course_mapping(StudentId, "
-					+ "CourseId) values(?, ?)";
-			PreparedStatement insertStuCourseMappingStmt = connection
-					.prepareStatement(insertStuCourseMappingSql);
-			for (Integer courseId : courseIds) {
-				insertStuCourseMappingStmt.setInt(1, studentId);
-				insertStuCourseMappingStmt.setInt(2, courseId);
-				insertStuCourseMappingStmt.executeUpdate();
-			}
+
+			insertIntoStuCourseMappingWithStudIdAndCourses(connection,
+					studentId, student.getCourses());
 
 			connection.commit();
 		} catch (SQLException e) {
@@ -175,6 +165,149 @@ public class StudentDAOImpl implements StudentDAO {
 			}
 		}
 
+	}
+
+	@Override
+	public Student findByName(String firstName, String lastName) {
+		String sql = "select studentId, gender, DOB, email, mobileNumber, address from Student "
+				+ " where firstName=? and lastName=?";
+		Student student = new Student();
+		try (Connection connection = DBConnector.getDBConnection()) {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, firstName);
+			stmt.setString(2, lastName);
+			ResultSet rs = stmt.executeQuery();
+			if (rs != null) {
+				while (rs.next()) {
+					student.setFirstName(firstName);
+					student.setLastName(lastName);
+					student.setGender(rs.getString(2));
+					student.setDOB(rs.getDate(3));
+					student.setEmail(rs.getString(4));
+					student.setMobileNumber(rs.getString(5));
+					student.setAddress(rs.getString(6));
+					student.setCourses(findCoursesByStudentId(rs.getInt(1)));
+					break; // Treating firstname and last name as unique record
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("Error executing sql " + sql, e);
+		}
+		return student;
+	}
+
+	private void insertIntoStuCourseMappingWithStudIdAndCourses(
+			Connection connection, int studentId, List<String> courses)
+			throws SQLException {
+		List<Integer> courseIds = findCourseIdsByCourseNames(courses);
+		String insertStuCourseMappingSql = "insert into student_course_mapping(StudentId, "
+				+ "CourseId) values(?, ?)";
+		PreparedStatement insertStuCourseMappingStmt = connection
+				.prepareStatement(insertStuCourseMappingSql);
+		for (Integer courseId : courseIds) {
+			insertStuCourseMappingStmt.setInt(1, studentId);
+			insertStuCourseMappingStmt.setInt(2, courseId);
+			insertStuCourseMappingStmt.executeUpdate();
+		}
+	}
+
+	private void deleteFromStuCourseMappingWithStudIdAndCourses(
+			Connection connection, int studentId, List<String> courses)
+			throws SQLException {
+		List<Integer> courseIds = findCourseIdsByCourseNames(courses);
+		String deleteStuCourseMappingSql = "delete from student_course_mapping where studentId=? and courseId=?";
+		PreparedStatement deleteStuCourseMappingStmt = connection
+				.prepareStatement(deleteStuCourseMappingSql);
+		for (Integer courseId : courseIds) {
+			deleteStuCourseMappingStmt.setInt(1, studentId);
+			deleteStuCourseMappingStmt.setInt(2, courseId);
+			deleteStuCourseMappingStmt.executeUpdate();
+		}
+	}
+
+	@Override
+	public void updateStudent(Student student) {
+		Connection connection = null;
+		String sql = "update Student set firstname=?, lastname=?, gender=?, DOB=?, Email=?, mobilenumber=?, "
+				+ "address=? where firstname=? and lastname=?";
+		try {
+			connection = DBConnector.getDBConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, student.getFirstName());
+			stmt.setString(2, student.getLastName());
+			stmt.setString(3, student.getGender());
+			stmt.setDate(4, student.getDOB());
+			stmt.setString(5, student.getEmail());
+			stmt.setString(6, student.getMobileNumber());
+			stmt.setString(7, student.getAddress());
+			stmt.setString(8, student.getFirstName());
+			stmt.setString(9, student.getLastName());
+			stmt.executeUpdate();
+
+			String retrieveStudentIdSql = "select studentId from Student where firstName=? and lastName=?";
+			PreparedStatement retrieveStudentIdStmt = connection
+					.prepareStatement(retrieveStudentIdSql);
+			retrieveStudentIdStmt.setString(1, student.getFirstName());
+			retrieveStudentIdStmt.setString(2, student.getLastName());
+			ResultSet rs = retrieveStudentIdStmt.executeQuery();
+			int studentId = 0;
+			if (rs != null) {
+				while (rs.next()) {
+					studentId = rs.getInt(1);
+					break; // Treating firstname and lastname as unique record
+				}
+			}
+
+			List<String> currentCourses = student.getCourses();
+			List<String> coursesInDB = findCoursesByStudentId(studentId);
+			// ABC, AB - Add C
+			// AB, ABC - Delete C
+			// AB, AB - No Op
+
+			List<String> coursesToAdd = new ArrayList<>();
+			List<String> coursesToDelete = new ArrayList<>();
+			for (String s : currentCourses) {
+				if (coursesInDB.contains(s)) {
+					continue;
+				} else {
+					coursesToAdd.add(s);
+				}
+			}
+
+			for (String s : coursesInDB) {
+				if (currentCourses.contains(s)) {
+					continue;
+				} else {
+					coursesToDelete.add(s);
+				}
+			}
+
+			if (coursesToAdd.size() > 0) {
+				insertIntoStuCourseMappingWithStudIdAndCourses(connection,
+						studentId, coursesToAdd);
+			}
+
+			if (coursesToDelete.size() > 0) {
+				deleteFromStuCourseMappingWithStudIdAndCourses(connection,
+						studentId, coursesToDelete);
+			}
+
+			connection.commit();
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				logger.error("Error rolling back transaction", e);
+			}
+			logger.error("Error updating student", e);
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				logger.error("Error closing connection", e);
+			}
+		}
 	}
 
 }

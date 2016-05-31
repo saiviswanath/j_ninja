@@ -48,4 +48,20 @@ public class StudentDAO_Test {
 		
 		studentDao.createStudent(student);
 	}
+	
+	public void testUpdateStudent() throws Exception {
+		Student student = new Student();
+		student.setFirstName("Viswanath");
+		student.setLastName("Palaparthi");
+		student.setGender("Male");
+		String dateString = "1988-09-10";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+		student.setDOB(new Date(sdf.parse(dateString).getTime()));
+		student.setEmail("viswanath.palaparthi@live.com");
+		student.setMobileNumber("8121157247");
+		student.setAddress("Chandanagar, HNO C3 115; HUDA Colony, Chandanagar, Hyderabad-500050");
+		
+		student.setCourses(Arrays.asList("Computers"));
+		studentDao.updateStudent(student);
+	}
 }

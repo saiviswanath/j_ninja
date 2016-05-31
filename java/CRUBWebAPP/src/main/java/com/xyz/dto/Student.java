@@ -4,6 +4,14 @@ import java.sql.Date;
 import java.util.List;
 
 public class Student {
+	@Override
+	public String toString() {
+		return "Student [firstName=" + firstName + ", lastName=" + lastName
+				+ ", gender=" + gender + ", DOB=" + DOB + ", email=" + email
+				+ ", mobileNumber=" + mobileNumber + ", address=" + address
+				+ ", courses=" + courses + "]";
+	}
+
 	private String firstName;
 	private String lastName;
 	private String gender;
