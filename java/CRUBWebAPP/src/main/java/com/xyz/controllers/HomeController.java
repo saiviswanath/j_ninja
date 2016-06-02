@@ -1,6 +1,5 @@
 package com.xyz.controllers;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,14 +22,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xyz.dao.StudentDAO;
 import com.xyz.dto.Student;
-import com.xyz.form.beans.Address;
 import com.xyz.form.beans.UpdateInputBean;
 import com.xyz.propertyeditors.LongPropertyEditor;
+import com.xyz.util.DataConverter;
 
 @Controller
 public class HomeController {
 	@Autowired
 	private StudentDAO studentDao;
+	@Autowired
+	private DataConverter dataConverter;
 
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -74,8 +75,8 @@ public class HomeController {
 			return new ModelAndView("newStudentPage");
 		}
 
-		studentDao
-				.createStudent(studentFormBeanToDtoConverter(studentFormBean));
+		studentDao.createStudent(dataConverter
+				.studentFormBeanToDtoConverter(studentFormBean));
 		ModelAndView mav = new ModelAndView("newStudentSuccess");
 		return mav;
 	}
@@ -107,61 +108,8 @@ public class HomeController {
 					updateInputBean.getFirstName(),
 					updateInputBean.getLastName());
 			return new ModelAndView("fetchUpdateFormDetails", "student",
-					studentDtoToFormBeanConverter(studentDto));
+					dataConverter.studentDtoToFormBeanConverter(studentDto));
 		}
-	}
-
-	private com.xyz.form.beans.Student studentDtoToFormBeanConverter(
-			Student studentDto) {
-		System.out.println("*************************************"
-				+ studentDto.toString());
-		com.xyz.form.beans.Student student = new com.xyz.form.beans.Student();
-		student.setFirstName(studentDto.getFirstName());
-		student.setLastName(studentDto.getLastName());
-		student.setGender(studentDto.getGender());
-		student.setDOB(new java.util.Date(studentDto.getDOB().getTime()));
-		student.setEmail(studentDto.getEmail());
-		student.setMobileNumber(studentDto.getMobileNumber());
-		student.setCourses(studentDto.getCourses());
-		String addressString = studentDto.getAddress();
-		String[] addressDetails = addressString.split(",");
-		Address address = new Address();
-		address.setHouseNo(addressDetails[0].trim());
-		address.setStreet(addressDetails[1].trim());
-		address.setArea(addressDetails[2].trim());
-		String[] citypinSplit = addressDetails[3].split("-");
-		address.setCity(citypinSplit[0].trim());
-		address.setPin(Long.parseLong(citypinSplit[1].trim()));
-		student.setAddress(address);
-		return student;
-	}
-
-	private Student studentFormBeanToDtoConverter(
-			com.xyz.form.beans.Student studentFormBean) {
-		Student studentDto = new Student();
-		studentDto.setFirstName(studentFormBean.getFirstName().trim());
-		studentDto.setLastName(studentFormBean.getLastName().trim());
-		studentDto.setGender(studentFormBean.getGender());
-		studentDto.setDOB(new Date(studentFormBean.getDOB().getTime()));
-		studentDto.setEmail(studentFormBean.getEmail().trim());
-		studentDto.setMobileNumber(studentFormBean.getMobileNumber().trim());
-		StringBuilder sb = new StringBuilder();
-		sb.append(studentFormBean.getAddress().getHouseNo().trim()
-				.replace(",", ";")
-				+ ", ");
-		sb.append(studentFormBean.getAddress().getStreet().trim()
-				.replace(",", ";")
-				+ ", ");
-		sb.append(studentFormBean.getAddress().getArea().trim()
-				.replace(",", ";")
-				+ ", ");
-		sb.append(studentFormBean.getAddress().getCity().trim()
-				.replace(",", ";")
-				+ "-");
-		sb.append(studentFormBean.getAddress().getPin());
-		studentDto.setAddress(sb.toString());
-		studentDto.setCourses(studentFormBean.getCourses());
-		return studentDto;
 	}
 
 	@RequestMapping(value = "/updateStudentDetails.do", method = RequestMethod.PUT)
@@ -171,11 +119,13 @@ public class HomeController {
 		if (bindingResult.hasErrors()) {
 			ModelAndView mav = new ModelAndView("fetchUpdateFormDetails",
 					"student",
-					studentDtoToFormBeanConverter(studentDao.findByName(
-							student.getFirstName(), student.getLastName())));
+					dataConverter.studentDtoToFormBeanConverter(studentDao
+							.findByName(student.getFirstName(),
+									student.getLastName())));
 			return mav;
 		}
-		studentDao.updateStudent(studentFormBeanToDtoConverter(student));
+		studentDao.updateStudent(dataConverter
+				.studentFormBeanToDtoConverter(student));
 		res.setHeader("Cache-Control", "no-cache");
 		ModelAndView mav = new ModelAndView("home");
 		return mav;

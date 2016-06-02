@@ -171,7 +171,7 @@ public class StudentDAOImpl implements StudentDAO {
 	public Student findByName(String firstName, String lastName) {
 		String sql = "select studentId, gender, DOB, email, mobileNumber, address from Student "
 				+ " where firstName=? and lastName=?";
-		Student student = new Student();
+		Student student = null;
 		try (Connection connection = DBConnector.getDBConnection()) {
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1, firstName);
@@ -179,6 +179,7 @@ public class StudentDAOImpl implements StudentDAO {
 			ResultSet rs = stmt.executeQuery();
 			if (rs != null) {
 				while (rs.next()) {
+					student = new Student();
 					student.setFirstName(firstName);
 					student.setLastName(lastName);
 					student.setGender(rs.getString(2));
@@ -198,7 +199,7 @@ public class StudentDAOImpl implements StudentDAO {
 
 	private void insertIntoStuCourseMappingWithStudIdAndCourses(
 			Connection connection, int studentId, List<String> courses)
-					throws SQLException {
+			throws SQLException {
 		List<Integer> courseIds = findCourseIdsByCourseNames(courses);
 		String insertStuCourseMappingSql = "insert into student_course_mapping(StudentId, "
 				+ "CourseId) values(?, ?)";
@@ -213,7 +214,7 @@ public class StudentDAOImpl implements StudentDAO {
 
 	private void deleteFromStuCourseMappingWithStudIdAndCourses(
 			Connection connection, int studentId, List<String> courses)
-					throws SQLException {
+			throws SQLException {
 		List<Integer> courseIds = findCourseIdsByCourseNames(courses);
 		String deleteStuCourseMappingSql = "delete from student_course_mapping where studentId=? and courseId=?";
 		PreparedStatement deleteStuCourseMappingStmt = connection
@@ -356,6 +357,35 @@ public class StudentDAOImpl implements StudentDAO {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public Student findStudentById(int studentId) {
+		String sql = "select firstName, lastName, gender, DOB, email, "
+				+ "mobileNumber, address from Student where studentId=?";
+		Student student = null;
+		try (Connection connection = DBConnector.getDBConnection()) {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setInt(1, studentId);
+			ResultSet rs = stmt.executeQuery();
+			if (rs != null) {
+				while (rs.next()) {
+					student = new Student();
+					student.setFirstName(rs.getString(1));
+					student.setLastName(rs.getString(2));
+					student.setGender(rs.getString(3));
+					student.setDOB(rs.getDate(4));
+					student.setEmail(rs.getString(5));
+					student.setMobileNumber(rs.getString(6));
+					student.setAddress(rs.getString(7));
+					student.setCourses(findCoursesByStudentId(studentId));
+					break;
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("Error executing sql " + sql, e);
+		}
+		return student;
 	}
 
 }
