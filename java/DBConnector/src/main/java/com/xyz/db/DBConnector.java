@@ -25,7 +25,7 @@ public class DBConnector {
   private static final Logger logger = Logger.getLogger(DBConnector.class);
   private static DataSource dataSource;
   private static final Properties props = PropertyLoader.getProperties();
-  
+
   private DBConnector() {}
 
   public static synchronized Connection getDBConnection() {
@@ -42,7 +42,8 @@ public class DBConnector {
       Context context;
       try {
         context = new InitialContext();
-        dataSource = (DataSource) context.lookup(props.getProperty(PropertyConstants.JNDI_DATASOURCE_NAME));
+        dataSource =
+            (DataSource) context.lookup(props.getProperty(PropertyConstants.JNDI_DATASOURCE_NAME));
         if (dataSource == null) {
           logger.error("Unable to connect to DB");
           throw new RuntimeException("Unable to connect to DB");
@@ -60,6 +61,21 @@ public class DBConnector {
         throw new RuntimeException("Unable to connect to DB");
       }
     }
+  }
+
+  public static synchronized DataSource getDataSource() {
+    if (dataSource == null) {
+      Context context;
+      try {
+        context = new InitialContext();
+        dataSource =
+            (DataSource) context.lookup(props.getProperty(PropertyConstants.JNDI_DATASOURCE_NAME));
+      } catch (NamingException e) {
+        logger.error("Data Source not found");
+        throw new RuntimeException("Data Source not found");
+      }
+    }
+    return dataSource;
   }
 
   public static void clean() {

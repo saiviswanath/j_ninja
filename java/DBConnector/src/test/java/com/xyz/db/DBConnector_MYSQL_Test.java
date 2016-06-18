@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -131,6 +132,12 @@ public class DBConnector_MYSQL_Test {
     thrown.expect(RuntimeException.class);
     thrown.expectMessage("Unable to connect to DB");
     DBConnector.getDBConnection();
+  }
+  
+  @Test
+  public void testGetDataSource() {
+    DataSource dataSource = DBConnector.getDataSource();
+    assertNotNull(dataSource);
   }
 
   private static String createContextFile() {
