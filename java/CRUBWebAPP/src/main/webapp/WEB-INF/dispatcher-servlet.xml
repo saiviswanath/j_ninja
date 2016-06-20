@@ -8,12 +8,60 @@
         	http://www.springframework.org/schema/context/spring-context-4.2.xsd
         	http://www.springframework.org/schema/mvc
                            http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+
+	<import resource="security.xml" />
 	<context:component-scan base-package="com.xyz.controllers" />
 	<context:component-scan base-package="com.xyz.dao" />
 	<context:component-scan base-package="com.xyz.util" />
+	<context:component-scan base-package="com.xyz.validation" />
+
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
 
 	<mvc:annotation-driven />
+	
+		<!-- Application properties -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:app.properties</value>
+		</property>
+	</bean>
 
+	<!-- Email component -->
+	<!-- http://stackoverflow.com/questions/18585682/spring-mail-authentication-error to use gmail smtp server-->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${user.email.emailHost}" />
+		<property name="port" value="${user.email.port}" />
+		<property name="username" value="${user.email.username}" />
+		<property name="password" value="${user.email.password}" />
+
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="velocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="velocityProperties">
+			<value>
+				resource.loader=class
+				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+			</value>
+		</property>
+	</bean>
+
+	<bean id="userEmailUtil" class="com.xyz.util.UserEmailUtil">
+		<property name="mailSender" ref="mailSender" />
+		<property name="velocityEngine" ref="velocityEngine" />
+		<property name="fromAddress" value="${user.email.fromAddress}"></property>
+	</bean>
+
+
+	<!-- For Message Properties -->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="messages" />

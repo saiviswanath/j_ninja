@@ -7,11 +7,53 @@
 	<packaging>war</packaging>
 	<name>CRUBWebAPP</name>
 	<description>CRUBWebAPP</description>
+		<properties>
+		<maven.tomcat.port>9090</maven.tomcat.port>
+		<maven.spring.version>4.2.6.RELEASE</maven.spring.version>
+		<maven.springsec.version>4.1.0.RELEASE</maven.springsec.version>
+	</properties>
 	<dependencies>
+	<!-- Email support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${maven.spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		<!-- Email support end -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${maven.springsec.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${maven.springsec.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${maven.springsec.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${maven.springsec.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.2.6.RELEASE</version>
+			<version>${maven.spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -55,10 +97,12 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.7.4</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+		</dependency>
 	</dependencies>
-	<properties>
-		<maven.tomcat.port>9090</maven.tomcat.port>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>
