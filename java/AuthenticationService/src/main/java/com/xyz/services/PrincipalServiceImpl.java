@@ -90,4 +90,17 @@ public class PrincipalServiceImpl implements PrincipalService {
     return (PrincipalDto) authResult.getPrincipal();
   }
 
+  @Override
+  public PrincipalDto getPricipal(String userName) throws RuntimeException {
+    if (userName == null) {
+      userName = "";
+    }
+    String lowerCaseUserName = userName.toLowerCase();
+    PrincipalDto pDto = principalDao.findPrincipal(lowerCaseUserName);
+    if (pDto == null) {
+      throw new RuntimeException("No user found for username " + userName);
+    }
+    return pDto;
+  }
+
 }

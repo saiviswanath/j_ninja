@@ -6,4 +6,5 @@ import com.xyz.dto.PrincipalDto;
 
 public interface PrincipalService extends UserDetailsManager {
   public PrincipalDto authenticatePrincipal(String userName, String password);
+  public PrincipalDto getPricipal(String userName);
 }

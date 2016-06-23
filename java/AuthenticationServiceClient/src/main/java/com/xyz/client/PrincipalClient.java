@@ -1,5 +1,8 @@
 package com.xyz.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -30,6 +33,18 @@ public class PrincipalClient extends AbstractAuthClient {
     PrincipalResponse response =
         restTemplate.postForObject(url, authRequest, PrincipalResponse.class);
 
+    response.verify();
+    return response.getPrincipal();
+  }
+
+  public Principal getPrincipal(String userName) {
+    String url = getUrl("/principal/{username}");
+    if (userName == null) {
+      userName = "";
+    }
+    Map<String, String> varMap = new HashMap<>();
+    varMap.put("username", userName.toLowerCase());
+    PrincipalResponse response = restTemplate.getForObject(url, PrincipalResponse.class, varMap);
     response.verify();
     return response.getPrincipal();
   }
