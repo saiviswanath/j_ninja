@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/security
+                        http://www.springframework.org/schema/security/spring-security-4.1.xsd">
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<property name="messageConverters">
+			<list>
+				<bean class="com.xyz.gson.GsonHttpMessageConverter">
+					<property name="gson">
+						<bean class="com.xyz.gson.AuthGsonFactory" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<security:http auto-config="true" use-expressions="true"
+		authentication-manager-ref="org.springframework.security.authenticationManager">
+		<security:intercept-url pattern="/**.do"
+			access="authenticated" />
+		<security:intercept-url pattern="/**.jsp"
+			access="authenticated" />
+		<security:intercept-url pattern="/**/css/*.css"
+			access="authenticated" />
+		<security:intercept-url pattern="/**/js/*.js"
+			access="authenticated" />
+		<security:form-login username-parameter="username"
+			password-parameter="password" login-page="/login" default-target-url="/getHomePage.do"
+			login-processing-url="/j_spring_security_check"
+			authentication-failure-url="/loginwithmessage" />
+		<security:logout logout-success-url="/login"
+			logout-url="/logout" />
+		<security:csrf />
+		<security:access-denied-handler
+			error-page="/403" />
+	</security:http>
+
+	<security:authentication-manager
+		alias="org.springframework.security.authenticationManager">
+		<security:authentication-provider
+			ref="customAuthProvider" />
+	</security:authentication-manager>
+
+	<bean id="customAuthProvider" class="com.xyz.providers.CustomAuthProvider" />
+
+	<bean id="principalClient" class="com.xyz.client.PrincipalClient">
+		<constructor-arg ref="configuration" />
+	</bean>
+
+	<bean id="configuration" class="com.xyz.config.Configuration">
+		<constructor-arg ref="configProps" />
+	</bean>
+
+	<bean id="configProps"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:app.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+	</bean>
+
+
+	<security:global-method-security
+		pre-post-annotations="enabled" />
+</beans>
