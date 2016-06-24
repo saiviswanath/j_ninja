@@ -1,5 +1,9 @@
 package com.xyz.services;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +18,9 @@ import com.xyz.dao.PrincipalDao;
 import com.xyz.dto.PrincipalDto;
 import com.xyz.exceptions.AutheticationServiceException;
 import com.xyz.exceptions.ExceptionCause;
+import com.xyz.util.Comparators;
+import com.xyz.util.PageAndSortData;
+import com.xyz.util.SortColumn;
 
 public class PrincipalServiceImpl implements PrincipalService {
 
@@ -50,7 +57,7 @@ public class PrincipalServiceImpl implements PrincipalService {
     String lowerCaseUserName = userName.toLowerCase();
     return principalDao.usernameExists(lowerCaseUserName);
   }
-  
+
   @Override
   public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
     if (userName == null) {
@@ -103,4 +110,28 @@ public class PrincipalServiceImpl implements PrincipalService {
     return pDto;
   }
 
+  @Override
+  public List<PrincipalDto> getPrincipals(PageAndSortData pandsdata) {
+    List<PrincipalDto> pDtoList = principalDao.findPrincipals();
+
+    int toIndex = pandsdata.getFirst() + pandsdata.getMax();
+    if (toIndex > pDtoList.size()) {
+      toIndex = pDtoList.size();
+    }
+    if (pandsdata.getFirst() >= pDtoList.size() || toIndex <= pandsdata.getFirst()) {
+      pDtoList.clear();
+    } else {
+      SortColumn sortColumn = SortColumn.get(pandsdata.getSort());
+      Collections.sort(pDtoList,
+          Comparators.getComparator(sortColumn, pandsdata.getSortDirection()));
+      pDtoList = pDtoList.subList(pandsdata.getFirst(), toIndex);
+    }
+
+    return pDtoList;
+  }
+
+  public static void main(String... args) {
+    SortColumn sortColumn = SortColumn.get("username");
+    System.out.println(sortColumn.getColName());
+  }
 }

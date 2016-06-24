@@ -83,4 +83,29 @@ public class PrincipalDaoImpl implements PrincipalDao {
     return exists;
   }
 
+  @Override
+  public List<PrincipalDto> findPrincipals() {
+    String sql = "select username, password, email, enabled from User";
+    List<PrincipalDto> pDtoList = new ArrayList<>();
+    try (Connection connection = DBConnector.getDBConnection()) {
+      PreparedStatement stmt = connection.prepareStatement(sql);
+      ResultSet rs = stmt.executeQuery();
+      if (rs != null) {
+        while (rs.next()) {
+          PrincipalDto pDto = new PrincipalDto();
+          pDto.setUsername(rs.getString(1));
+          pDto.setPassword(rs.getString(2));
+          pDto.setEmail(rs.getString(3));
+          pDto.setEnabled(rs.getInt(4));
+          pDto.setRoles(findRolesByName(rs.getString(1)));
+          pDtoList.add(pDto);
+        }
+      }
+
+    } catch (SQLException e) {
+      logger.error("Error fetching principals from DB", e);
+    }
+    return pDtoList;
+  }
+
 }

@@ -3,6 +3,8 @@ package com.xyz.client;
 import java.util.Collection;
 import java.util.Map;
 
+import com.xyz.beans.PagedCommand;
+import com.xyz.beans.SortablePagedCommand;
 import com.xyz.config.Configuration;
 import com.xyz.config.ConfigurationProperty;
 
@@ -60,6 +62,33 @@ public class AbstractAuthClient {
       }
     } else {
       sb.append(getDelimiter(sb)).append(param).append('=').append("" + value);
+    }
+  }
+
+  protected String getUrl(String path, PagedCommand pagedCommand) {
+    return getUrl(path, pagedCommand, null);
+  }
+
+  protected String getUrl(String path, PagedCommand pagedCommand, Map<String, ?> extraParams) {
+    StringBuilder sb = getUrlBuffer(path);
+    appendPagedCommand(sb, pagedCommand);
+    appendParams(sb, extraParams);
+    return sb.toString();
+  }
+
+  private void appendPagedCommand(StringBuilder sb, PagedCommand pagedCommand) {
+    if (pagedCommand != null) {
+      sb.append(getDelimiter(sb)).append("first=").append(pagedCommand.getFirst());
+      sb.append("&max=").append(pagedCommand.getMax());
+      if (pagedCommand instanceof SortablePagedCommand) {
+        SortablePagedCommand sortable = (SortablePagedCommand) pagedCommand;
+        if (sortable.getSort() != null) {
+          appendParam(sb, "sortBy", sortable.getSort());
+          if (sortable.getSortDirection() != null) {
+            appendParam(sb, "sortDirection", sortable.getSortDirection());
+          }
+        }
+      }
     }
   }
 }
