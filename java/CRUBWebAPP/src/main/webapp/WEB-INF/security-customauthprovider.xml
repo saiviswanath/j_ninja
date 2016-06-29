@@ -6,7 +6,7 @@
 	http://www.springframework.org/schema/security
                         http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
-	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	<bean id="restTemplate" class="com.xyz.client.AuthRestTemplate">
 		<property name="messageConverters">
 			<list>
 				<bean class="com.xyz.gson.GsonHttpMessageConverter">
@@ -48,23 +48,12 @@
 	<bean id="customAuthProvider" class="com.xyz.providers.CustomAuthProvider" />
 
 	<bean id="principalClient" class="com.xyz.client.PrincipalClient">
-		<constructor-arg ref="configuration" />
+		<constructor-arg ref="authConfiguration" />
 	</bean>
 
-	<bean id="configuration" class="com.xyz.config.Configuration">
+	<bean id="authConfiguration" class="com.xyz.config.AuthConfiguration">
 		<constructor-arg ref="configProps" />
 	</bean>
-
-	<bean id="configProps"
-		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="locations">
-			<list>
-				<value>classpath:app.properties</value>
-			</list>
-		</property>
-		<property name="ignoreResourceNotFound" value="true" />
-	</bean>
-
 
 	<security:global-method-security
 		pre-post-annotations="enabled" />

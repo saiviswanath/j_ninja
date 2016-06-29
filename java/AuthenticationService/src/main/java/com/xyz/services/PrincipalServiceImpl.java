@@ -3,7 +3,6 @@ package com.xyz.services;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -121,7 +120,7 @@ public class PrincipalServiceImpl implements PrincipalService {
     if (pandsdata.getFirst() >= pDtoList.size() || toIndex <= pandsdata.getFirst()) {
       pDtoList.clear();
     } else {
-      SortColumn sortColumn = SortColumn.get(pandsdata.getSort());
+      SortColumn sortColumn = SortColumn.get(pandsdata.getSortBy());
       Collections.sort(pDtoList,
           Comparators.getComparator(sortColumn, pandsdata.getSortDirection()));
       pDtoList = pDtoList.subList(pandsdata.getFirst(), toIndex);

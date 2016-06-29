@@ -5,13 +5,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.xyz.beans.PagedCommand;
 import com.xyz.beans.PagedResult;
 import com.xyz.beans.Principal;
 import com.xyz.beans.SortablePagedCommand;
-import com.xyz.config.Configuration;
+import com.xyz.config.AuthConfiguration;
 import com.xyz.response.PrincipalResponse;
 import com.xyz.response.PrincipalsResponse;
 
@@ -20,9 +19,9 @@ public class PrincipalClient extends AbstractAuthClient {
   public static final int MAX_USER_RECORDS = 10000;
 
   @Autowired
-  private RestTemplate restTemplate;
+  private AuthRestTemplate restTemplate;
 
-  public PrincipalClient(Configuration config) {
+  public PrincipalClient(AuthConfiguration config) {
     super(config);
   }
 
@@ -65,7 +64,7 @@ public class PrincipalClient extends AbstractAuthClient {
   }
   
   public static void main(String... args) {
-    PrincipalClient pc= new PrincipalClient(new Configuration());
+    PrincipalClient pc= new PrincipalClient(new AuthConfiguration(null));
     SortablePagedCommand pg = new SortablePagedCommand();
     pg.setFirst(0);
     pg.setMax(30);

@@ -5,13 +5,13 @@ import java.util.Map;
 
 import com.xyz.beans.PagedCommand;
 import com.xyz.beans.SortablePagedCommand;
-import com.xyz.config.Configuration;
-import com.xyz.config.ConfigurationProperty;
+import com.xyz.config.AuthConfiguration;
+import com.xyz.config.AuthConfigurationProperty;
 
 public class AbstractAuthClient {
   private final String baseUrl;
 
-  public AbstractAuthClient(Configuration config) {
+  public AbstractAuthClient(AuthConfiguration config) {
     this.baseUrl = getBaseUrl(config);
   }
 
@@ -19,14 +19,14 @@ public class AbstractAuthClient {
     return baseUrl;
   }
 
-  private static String getBaseUrl(Configuration config) {
-    boolean useHttps = config.getPropertyBoolean(ConfigurationProperty.AUTH_USE_HTTPS);
+  private static String getBaseUrl(AuthConfiguration config) {
+    boolean useHttps = config.getPropertyBoolean(AuthConfigurationProperty.AUTH_USE_HTTPS);
     if (useHttps)
-      return config.getPropertyHttpsUrl(ConfigurationProperty.AUTH_HOST,
-          ConfigurationProperty.AUTH_PORT, ConfigurationProperty.AUTH_CONTEXT_PATH);
+      return config.getPropertyHttpsUrl(AuthConfigurationProperty.AUTH_HOST,
+          AuthConfigurationProperty.AUTH_PORT, AuthConfigurationProperty.AUTH_CONTEXT_PATH);
     else
-      return config.getPropertyHttpUrl(ConfigurationProperty.AUTH_HOST,
-          ConfigurationProperty.AUTH_PORT, ConfigurationProperty.AUTH_CONTEXT_PATH);
+      return config.getPropertyHttpUrl(AuthConfigurationProperty.AUTH_HOST,
+          AuthConfigurationProperty.AUTH_PORT, AuthConfigurationProperty.AUTH_CONTEXT_PATH);
   }
 
   protected String getUrl(String path) {

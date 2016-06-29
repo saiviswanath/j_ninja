@@ -1,27 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>AuthenticationService</groupId>
-	<artifactId>AuthenticationService</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>CrudService</groupId>
+	<artifactId>CrudService</artifactId>
+	<version>0.0.1</version>
 	<packaging>war</packaging>
-	<name>AuthenticationService</name>
-	<description>AuthenticationService</description>
+	<name>CrudService</name>
+	<description>CrudService</description>
 	<properties>
-		<maven.tomcat.port>9091</maven.tomcat.port>
+		<maven.tomcat.port>9092</maven.tomcat.port>
 		<maven.spring.version>4.2.6.RELEASE</maven.spring.version>
-		<maven.springsec.version>4.1.0.RELEASE</maven.springsec.version>
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>AuthenticationServiceClient</groupId>
-			<artifactId>AuthenticationServiceClient</artifactId>
+			<groupId>CrudServiceClient</groupId>
+			<artifactId>CrudServiceClient</artifactId>
 			<version>0.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -29,24 +23,9 @@
 			<version>${maven.spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>${maven.springsec.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${maven.springsec.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${maven.springsec.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>5.2.4.Final</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
 		</dependency>
 		<dependency>
 			<groupId>DBConnector</groupId>

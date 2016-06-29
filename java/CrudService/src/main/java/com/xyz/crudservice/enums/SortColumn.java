@@ -1,14 +1,13 @@
-package com.xyz.util;
+package com.xyz.crudservice.enums;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum SortColumn {
-  USERNAME("username"), EMAIL("email"), ENABLED("enabled");
+  FIRSTNAME("firstname"), LASTNAME("lastname"), GENDER("gender"), DOB("dob");
 
   private final String colName;
   private static final Map<String, SortColumn> lookup = new HashMap<>();
-
   static {
     for (SortColumn c : SortColumn.values()) {
       lookup.put(c.getColName(), c);

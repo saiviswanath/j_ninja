@@ -1,6 +1,7 @@
-package com.xyz.util;
+package com.xyz.crudservice.utilbeans;
 
-import com.xyz.util.SortDirection;
+import com.xyz.crudserviceclient.enums.SortDirection;
+
 
 public class PageAndSortData {
   private int first;
@@ -28,7 +29,7 @@ public class PageAndSortData {
     return sortBy;
   }
 
-  public void setSort(String sortBy) {
+  public void setSortBy(String sortBy) {
     this.sortBy = sortBy;
   }
 

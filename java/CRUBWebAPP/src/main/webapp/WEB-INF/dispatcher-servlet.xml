@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
 	http://www.springframework.org/schema/context
         	http://www.springframework.org/schema/context/spring-context-4.2.xsd
         	http://www.springframework.org/schema/mvc
-                           http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+                           http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util-4.2.xsd">
 
 	<import resource="security-customauthprovider.xml" />
 	<context:component-scan base-package="com.xyz.controllers" />
@@ -19,8 +21,8 @@
 	<mvc:resources mapping="/js/**" location="/js/" />
 
 	<mvc:annotation-driven />
-	
-		<!-- Application properties -->
+
+	<!-- Application properties -->
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
@@ -28,8 +30,11 @@
 		</property>
 	</bean>
 
+	<util:properties id="configProps" location="classpath:app.properties"/>
+
 	<!-- Email component -->
-	<!-- http://stackoverflow.com/questions/18585682/spring-mail-authentication-error to use gmail smtp server-->
+	<!-- http://stackoverflow.com/questions/18585682/spring-mail-authentication-error 
+		to use gmail smtp server -->
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="${user.email.emailHost}" />
 		<property name="port" value="${user.email.port}" />
