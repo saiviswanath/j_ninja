@@ -2,17 +2,13 @@ package com.xyz.beans;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.xyz.validators.PrincipalValidator;
@@ -83,6 +79,9 @@ public class Principal implements UserDetails, Cloneable {
   }
 
   public List<String> getRoles() {
+    if (roles == null) {
+      roles = new ArrayList<>();
+    }
     return roles;
   }
 
@@ -90,29 +89,33 @@ public class Principal implements UserDetails, Cloneable {
     this.roles = roles;
   }
 
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
+  }
+
+  @Override
+  public Collection<CustomGrantedAuthority> getAuthorities() {
+    List<CustomGrantedAuthority> authorities = new ArrayList<>();
     for (String role : getRoles()) {
-      authorities.add(new SimpleGrantedAuthority(role));
+      authorities.add(new CustomGrantedAuthority(role));
     }
     return authorities;
   }
 
+  @Override
   public boolean isAccountNonExpired() {
     return true;
   }
 
+  @Override
   public boolean isAccountNonLocked() {
     return true;
   }
 
+  @Override
   public boolean isCredentialsNonExpired() {
     return true;
-  }
-
-  @Override
-  public String toString() {
-    return ToStringBuilder.reflectionToString(this);
   }
 
 }

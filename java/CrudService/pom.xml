@@ -10,8 +10,14 @@
 	<properties>
 		<maven.tomcat.port>9092</maven.tomcat.port>
 		<maven.spring.version>4.2.6.RELEASE</maven.spring.version>
+		<maven.jackson.version>2.7.4</maven.jackson.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>ServiceUtils</groupId>
+			<artifactId>ServiceUtils</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>CrudServiceClient</groupId>
 			<artifactId>CrudServiceClient</artifactId>
@@ -51,7 +57,17 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.7.4</version>
+			<version>${maven.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${maven.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${maven.jackson.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
