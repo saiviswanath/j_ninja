@@ -20,6 +20,12 @@
 			<version>0.0.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>CrudServiceClient</groupId>
+			<artifactId>CrudServiceClient</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
 		<!-- Auth Clinet and dependencies -->
 		<dependency>
 			<groupId>AuthenticationServiceClient</groupId>

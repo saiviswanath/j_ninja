@@ -28,7 +28,7 @@
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
-	
+
 	<bean id="jacksonObjectMapper" class="com.xyz.serviceutils.json.jackson.ObjectMapperFactory" />
 
 	<!-- Application properties -->
@@ -39,7 +39,21 @@
 		</property>
 	</bean>
 
-	<util:properties id="configProps" location="classpath:app.properties"/>
+	<util:properties id="configProps" location="classpath:app.properties" />
+
+	<!-- Clients -->
+
+	<bean id="crudServiceRestTemplate"
+		class="com.xyz.crudserviceclient.client.CrudServiceRestTemplate" />
+
+	<bean id="crudServiceConfiguration"
+		class="com.xyz.crudserviceclient.config.CrudServiceConfiguration">
+		<constructor-arg ref="configProps" />
+	</bean>
+
+	<bean id="studentServiceClient" class="com.xyz.crudserviceclient.client.StudentServiceClient">
+		<constructor-arg ref="crudServiceConfiguration" />
+	</bean>
 
 	<!-- Email component -->
 	<!-- http://stackoverflow.com/questions/18585682/spring-mail-authentication-error 

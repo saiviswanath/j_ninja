@@ -41,4 +41,9 @@ public class StudentServiceImpl implements StudentService {
     return students;
   }
 
+  @Override
+  public int getStudentCount() {
+      return studentDao.findStudentRowCount();
+  }
+
 }

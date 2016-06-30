@@ -80,6 +80,7 @@ public class StudentController {
           "Unable to fetch all students from DB", e);
     }
     PagedResult<StudentBean> pagedResult = new PagedResult<>(studentBeans, studentBeans.size());
+    pagedResult.setUnfilteredItems(studentService.getStudentCount());
     return new ResponseEntity<>(new StudentsResponse(pagedResult), HttpStatus.OK);
   }
 

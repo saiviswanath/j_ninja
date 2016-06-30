@@ -8,4 +8,5 @@ import com.xyz.crudservice.utilbeans.PageAndSortData;
 
 public interface StudentService {
   public List<StudentDto> getAllStudents(PageAndSortData pageAndSortData);
+  public int getStudentCount();
 }

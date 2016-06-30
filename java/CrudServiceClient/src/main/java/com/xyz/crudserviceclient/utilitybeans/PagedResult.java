@@ -9,6 +9,15 @@ public class PagedResult<T> {
   private List<T> items;
   private Integer total;
   private Integer first;
+  private Integer unfilteredItems;
+
+  public Integer getUnfilteredItems() {
+    return unfilteredItems;
+  }
+
+  public void setUnfilteredItems(Integer unfilteredItems) {
+    this.unfilteredItems = unfilteredItems;
+  }
 
   public PagedResult() {}
 

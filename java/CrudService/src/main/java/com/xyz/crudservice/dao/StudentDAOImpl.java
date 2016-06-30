@@ -382,4 +382,22 @@ public class StudentDAOImpl implements StudentDAO {
     }
     return student;
   }
+
+  @Override
+  public int findStudentRowCount() {
+    String sql = "select count(*) as count from student";
+    int studentCount = 0;
+    try (Connection connection = DBConnector.getDBConnection()) {
+      PreparedStatement stmt = connection.prepareStatement(sql);
+      ResultSet rs = stmt.executeQuery();
+      if (rs != null) {
+        while (rs.next()) {
+          studentCount = rs.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      logger.error("Failed to execute sql " + sql, e);
+    }
+    return studentCount;
+  }
 }

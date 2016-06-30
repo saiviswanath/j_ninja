@@ -19,8 +19,13 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xyz.crudserviceclient.beans.StudentBean;
+import com.xyz.crudserviceclient.client.StudentServiceClient;
+import com.xyz.crudserviceclient.utilitybeans.PagedResult;
+import com.xyz.crudserviceclient.utilitybeans.SortablePagedCommand;
 import com.xyz.dao.StudentDAO;
 import com.xyz.dto.Student;
 import com.xyz.form.beans.UpdateInputBean;
@@ -28,7 +33,10 @@ import com.xyz.propertyeditors.LongPropertyEditor;
 import com.xyz.util.DataConverter;
 
 @Controller
-public class HomeController {
+public class StudentController {
+  
+  @Autowired
+  private StudentServiceClient studentServiceClient;
   @Autowired
   private StudentDAO studentDao;
   @Autowired
@@ -43,8 +51,31 @@ public class HomeController {
 
   @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_READ')")
   @RequestMapping(value = "/getHomePage.do", method = RequestMethod.GET)
-  public ModelAndView getHomePage() {
+  public ModelAndView getHomePage(@RequestParam(value = "first", required = false) Integer first,
+      @RequestParam(value = "max", required = false) Integer max, @RequestParam(value = "sortBy",
+          required = false) String sortBy,
+      @RequestParam(value = "sortDirection", required = false) String sortDir) {
+    
     ModelAndView mav = new ModelAndView("home");
+
+    SortablePagedCommand sortablePagedCommand = new SortablePagedCommand();
+    sortablePagedCommand.setFirst(first);
+    sortablePagedCommand.setMax(max);
+    sortablePagedCommand.setSort(sortBy);
+    sortablePagedCommand.setSortDir(sortDir);
+    
+    PagedResult<StudentBean> students = studentServiceClient.getAllStudents(sortablePagedCommand);
+    List<StudentBean> studentList = students.getItems();
+    
+    int noOfRecords = students.getUnfilteredItems();
+    int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / max);
+    
+    mav.addObject("sortByField", sortBy);
+    mav.addObject("sortDirField", sortDir);
+    mav.addObject("studentList", studentList);
+    mav.addObject("noOfPages", noOfPages);
+    mav.addObject("currentPage", first);
+
     return mav;
   }
 
@@ -56,9 +87,6 @@ public class HomeController {
       courseMap.put(course, course);
     }
     model.addAttribute("courseList", courseMap);
-
-    List<Student> studentList = studentDao.findAllStudents();
-    model.addAttribute("studentList", studentList);
   }
 
   @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_WRITE')")

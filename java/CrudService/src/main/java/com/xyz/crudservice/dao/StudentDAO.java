@@ -24,4 +24,6 @@ public interface StudentDAO {
   public int findStudentIdByName(String firstName, String lastName);
 
   public StudentDto findStudentById(int studentId);
+  
+  public int findStudentRowCount();
 }
