@@ -1,7 +1,8 @@
 package com.xyz.crudserviceclient.enums;
 
 public enum FailureCause {
-  UNEXPECTED("unexpected");
+  UNEXPECTED("unexpected"), BAD_URI_SYNTAX("Bad Uri Syntax"), UNSUPPORTED_ENCODING("Unsupported Encoding"), 
+  MISSING_PARAM("Missing parameter");
 
   private final String message;
 

@@ -43,7 +43,37 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   public int getStudentCount() {
-      return studentDao.findStudentRowCount();
+    return studentDao.findStudentRowCount();
   }
 
+  @Override
+  public List<String> getAllCourses() {
+    List<String> courses = studentDao.findAllCourses();
+    return courses;
+  }
+
+  @Override
+  public void createStudent(StudentDto studentDto) {
+    studentDao.createStudent(studentDto);
+  }
+
+  @Override
+  public StudentDto findByName(String firstName, String lastName) {
+    return studentDao.findByName(firstName, lastName);
+  }
+
+  @Override
+  public int getStudentIdByName(String firstName, String lastName) {
+    return studentDao.findStudentIdByName(firstName, lastName);
+  }
+
+  @Override
+  public void updateStudent(StudentDto studentDto) {
+    studentDao.updateStudent(studentDto);
+  }
+
+  @Override
+  public boolean deleteStudentByName(String firstName, String lastName) {
+    return studentDao.deteteStudentByName(firstName, lastName);
+  }
 }

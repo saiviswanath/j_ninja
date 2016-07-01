@@ -8,18 +8,38 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Update Student Page Request</title>
 <link rel="stylesheet" href="./css/global.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var text = $("#resultMessage").text();
+		if (text == "") {
+			$("#resultMessage").hide();
+		} else {
+			$("#resultMessage").show();
+		}
+		
+		var text = $("#messageDisplay").text();
+		if (text == "") {
+			$("#messageDisplay").hide();
+		} else {
+			$("#messageDisplay").show();
+		}
+	});
+</script>
 </head>
 <body>
 	<div id="header">
 		<%@ include file="headerinclude.jsp"%>
 	</div>
 	<div id="body">
-		<h3>
-			<c:out value="Enter User Name Details to delete: " />
-		</h3>
+		<div id="resultMessage" class="resultBlock">${ResultMessage}</div>
+		<div id="messageDisplay" class="errorblock">${ErrorMessage}</div>
 		<s:form method="DELETE" commandName="updateInputBean"
 			action="./deleteFormDetails.do">
 			<s:errors path="*" cssClass="errorblock" element="div" />
+			<h3>
+				<c:out value="Enter User Name Details to delete: " />
+			</h3>
 			<table>
 				<tr>
 					<td><s:label path="firstName">First Name</s:label></td>
@@ -36,7 +56,6 @@
 			<input type="submit" value="delete" />
 		</s:form>
 	</div>
-	<div id="messageDisplay">${ErrorMessage}</div>
 	<div id="footer">
 		<%@ include file="footerinclude.jsp"%>
 	</div>

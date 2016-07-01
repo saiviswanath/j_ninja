@@ -9,3 +9,11 @@
 	padding: 8px;
 	margin: 16px;
 }
+
+.resultBlock {
+	color: #000;
+	background-color: #98FF98;
+	border: 3px solid #00FF00;
+	padding: 8px;
+	margin: 16px;
+}

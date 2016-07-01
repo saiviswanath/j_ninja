@@ -27,14 +27,13 @@ import com.xyz.crudserviceclient.client.StudentServiceClient;
 import com.xyz.crudserviceclient.utilitybeans.PagedResult;
 import com.xyz.crudserviceclient.utilitybeans.SortablePagedCommand;
 import com.xyz.dao.StudentDAO;
-import com.xyz.dto.Student;
 import com.xyz.form.beans.UpdateInputBean;
 import com.xyz.propertyeditors.LongPropertyEditor;
 import com.xyz.util.DataConverter;
 
 @Controller
 public class StudentController {
-  
+
   @Autowired
   private StudentServiceClient studentServiceClient;
   @Autowired
@@ -53,9 +52,9 @@ public class StudentController {
   @RequestMapping(value = "/getHomePage.do", method = RequestMethod.GET)
   public ModelAndView getHomePage(@RequestParam(value = "first", required = false) Integer first,
       @RequestParam(value = "max", required = false) Integer max, @RequestParam(value = "sortBy",
-          required = false) String sortBy,
+      required = false) String sortBy,
       @RequestParam(value = "sortDirection", required = false) String sortDir) {
-    
+
     ModelAndView mav = new ModelAndView("home");
 
     SortablePagedCommand sortablePagedCommand = new SortablePagedCommand();
@@ -63,13 +62,13 @@ public class StudentController {
     sortablePagedCommand.setMax(max);
     sortablePagedCommand.setSort(sortBy);
     sortablePagedCommand.setSortDir(sortDir);
-    
+
     PagedResult<StudentBean> students = studentServiceClient.getAllStudents(sortablePagedCommand);
     List<StudentBean> studentList = students.getItems();
-    
+
     int noOfRecords = students.getUnfilteredItems();
     int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / max);
-    
+
     mav.addObject("sortByField", sortBy);
     mav.addObject("sortDirField", sortDir);
     mav.addObject("studentList", studentList);
@@ -81,11 +80,12 @@ public class StudentController {
 
   @ModelAttribute
   public void addCourseListObject(Model model) {
-    List<String> courseList = studentDao.findAllCourses();
+    List<String> courseList = studentServiceClient.getAllCourses();
     Map<String, String> courseMap = new LinkedHashMap<>();
     for (String course : courseList) {
       courseMap.put(course, course);
     }
+
     model.addAttribute("courseList", courseMap);
   }
 
@@ -106,7 +106,8 @@ public class StudentController {
       return new ModelAndView("newStudentPage");
     }
 
-    studentDao.createStudent(dataConverter.studentFormBeanToDtoConverter(studentFormBean));
+    studentServiceClient
+    .createStudent(dataConverter.studentFormBeanToBeanConveter(studentFormBean));
     ModelAndView mav = new ModelAndView("newStudentSuccess");
     return mav;
   }
@@ -129,7 +130,7 @@ public class StudentController {
     }
 
     int studentId =
-        studentDao.findStudentIdByName(updateInputBean.getFirstName(),
+        studentServiceClient.getStudentIdByName(updateInputBean.getFirstName(),
             updateInputBean.getLastName());
 
     if (studentId == 0) {
@@ -137,10 +138,11 @@ public class StudentController {
       mav.addObject("ErrorMessage", "No records Found");
       return mav;
     } else {
-      Student studentDto =
-          studentDao.findByName(updateInputBean.getFirstName(), updateInputBean.getLastName());
+      StudentBean studentBean =
+          studentServiceClient.getStudentByName(updateInputBean.getFirstName(),
+              updateInputBean.getLastName());
       return new ModelAndView("fetchUpdateFormDetails", "student",
-          dataConverter.studentDtoToFormBeanConverter(studentDto));
+          dataConverter.studentBeanToStudentFormBeanConverter(studentBean));
     }
   }
 
@@ -149,16 +151,20 @@ public class StudentController {
   public ModelAndView updateStudentDetails(
       @Valid @ModelAttribute com.xyz.form.beans.Student student, BindingResult bindingResult,
       final HttpServletResponse res) {
+    String firstName = student.getFirstName();
+    String lastName = student.getLastName();
     if (bindingResult.hasErrors()) {
       ModelAndView mav =
           new ModelAndView("fetchUpdateFormDetails", "student",
-              dataConverter.studentDtoToFormBeanConverter(studentDao.findByName(
-                  student.getFirstName(), student.getLastName())));
+              dataConverter.studentBeanToStudentFormBeanConverter(studentServiceClient
+                  .getStudentByName(firstName, lastName)));
       return mav;
     }
-    studentDao.updateStudent(dataConverter.studentFormBeanToDtoConverter(student));
+    studentServiceClient.updateStudent(dataConverter.studentFormBeanToBeanConveter(student));
     res.setHeader("Cache-Control", "no-cache");
-    ModelAndView mav = new ModelAndView("home");
+    ModelAndView mav =
+        new ModelAndView("updateInputForm", "updateInputBean", new UpdateInputBean());
+    mav.addObject("ResultMessage", "Student " + firstName + " " + lastName + " data updated");
     return mav;
   }
 
@@ -173,15 +179,18 @@ public class StudentController {
   @RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.DELETE)
   public ModelAndView deleteFormDetails(@Valid @ModelAttribute UpdateInputBean updateInputBean,
       BindingResult bindingResult, final HttpServletResponse res) {
+    String firstName = updateInputBean.getFirstName();
+    String lastName = updateInputBean.getLastName();
     if (bindingResult.hasErrors()) {
       return new ModelAndView("deleteFormPage");
     }
-    boolean deletedRecord =
-        studentDao.deteteStudentByName(updateInputBean.getFirstName(),
-            updateInputBean.getLastName());
+    boolean deletedRecord = studentServiceClient.deleteStudentByName(firstName, lastName);
     if (deletedRecord) {
       res.setHeader("Cache-Control", "no-cache");
-      return new ModelAndView("home");
+      ModelAndView mView =
+          new ModelAndView("deleteFormPage", "updateInputBean", new UpdateInputBean());
+      mView.addObject("ResultMessage", "Student " + firstName + " " + lastName + " data deleted");
+      return mView;
     } else {
       ModelAndView mav = new ModelAndView("deleteFormPage");
       mav.addObject("ErrorMessage", "No records Found");

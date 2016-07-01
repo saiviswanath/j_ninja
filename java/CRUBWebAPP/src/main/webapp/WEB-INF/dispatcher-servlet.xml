@@ -97,9 +97,20 @@
 		<property name="defaultEncoding" value="UTF-8" />
 	</bean>
 
-	<bean id="viewResolver"
+
+	<bean id="urlBasedViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView"></property>
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="1" />
+	</bean>
+
+	<bean id="internalResViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/jsps/" />
 		<property name="suffix" value=".jsp" />
+		<property name="order" value="0" />
 	</bean>
 </beans>
