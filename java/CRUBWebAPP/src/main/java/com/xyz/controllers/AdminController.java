@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xyz.authenticationserviceclient.client.PrincipalClient;
 import com.xyz.dao.UserDAO;
 import com.xyz.dto.User;
 import com.xyz.form.beans.UserUpdateInputBean;
@@ -29,6 +30,8 @@ public class AdminController {
   private DataConverter dataConverter;
   @Autowired
   private CustomUserValidator customUserValidator;
+  @Autowired
+  private PrincipalClient principalClient;
 
   @ModelAttribute
   public void addModelAttributes(Model model) {
@@ -59,7 +62,7 @@ public class AdminController {
     if (bindingResult.hasErrors()) {
       return new ModelAndView("newUserPage");
     }
-    userDao.createUser(dataConverter.userFormBeantoDtoConverter(user));
+    principalClient.createPrincipal(dataConverter.userFormBeantoPrincipalConverter(user));
     ModelAndView mav = new ModelAndView("newUserSuccess");
     return mav;
   }

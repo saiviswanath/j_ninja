@@ -4,6 +4,7 @@ import java.sql.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.xyz.authenticationserviceclient.beans.Principal;
 import com.xyz.crudserviceclient.beans.StudentBean;
 import com.xyz.dto.Student;
 import com.xyz.dto.User;
@@ -51,6 +52,19 @@ public class DataConverter {
     student.setAddress(address);
     return student;
   }
+  
+  public Principal userFormBeantoPrincipalConverter(com.xyz.form.beans.User user) {
+    Principal principal = new Principal();
+    principal.setUsername(user.getUserName());
+    principal.setPassword(user.getRetypedPassword());
+    principal.setFirstName(user.getFirstName());
+    principal.setLastName(user.getLastName());
+    principal.setEmail(user.getEmail());
+    principal.setPreferredTimeZoneId(user.getPreferredTimeZoneId());
+    principal.setDisabled(user.isDisabled());
+    principal.setRoles(user.getRoles());
+    return principal;
+  }
 
   @Deprecated
   public Student studentFormBeanToDtoConverter(com.xyz.form.beans.Student studentFormBean) {
@@ -95,17 +109,13 @@ public class DataConverter {
     return student;
   }
 
+  @Deprecated
   public User userFormBeantoDtoConverter(com.xyz.form.beans.User user) {
     User userDto = new User();
     userDto.setUserName(user.getUserName());
     userDto.setPassword(user.getRetypedPassword());
     userDto.setEmail(user.getEmail());
-    boolean userEnabled = user.isEnabled();
-    if (userEnabled) {
-      userDto.setEnabled(1);
-    } else {
-      userDto.setEnabled(0);
-    }
+   userDto.setEnabled(1);
     userDto.setRoles(user.getRoles());
     return userDto;
   }
@@ -116,12 +126,7 @@ public class DataConverter {
     user.setPassword(userDto.getPassword());
     user.setRetypedPassword(userDto.getPassword());
     user.setEmail(userDto.getEmail());
-    int userEnabled = userDto.getEnabled();
-    if (userEnabled == 1) {
-      user.setEnabled(true);
-    } else {
-      user.setEnabled(false);
-    }
+    user.setDisabled(false);
     user.setRoles(userDto.getRoles());
     return user;
   }

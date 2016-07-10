@@ -37,13 +37,28 @@
 					<td><s:errors path="retypedPassword" cssClass="error" /></td>
 				</tr>
 				<tr>
+					<td><s:label path="firstName">First Name</s:label></td>
+					<td><s:input path="firstName" /></td>
+					<td><s:errors path="firstName" cssClass="error" /></td>
+				</tr>
+				<tr>
+					<td><s:label path="lastName">Last Name</s:label></td>
+					<td><s:input path="lastName" /></td>
+					<td><s:errors path="lastName" cssClass="error" /></td>
+				</tr>
+				<tr>
 					<td><s:label path="email">Email</s:label></td>
 					<td><s:input path="email" /></td>
 					<td><s:errors path="email" cssClass="error" /></td>
 				</tr>
 				<tr>
-					<td><s:checkbox path="enabled" />Enabled</td>
-					<td><s:errors path="enabled" cssClass="error" /></td>
+					<td><s:label path="preferredTimeZoneId">Time Zone</s:label></td>
+					<td><s:input path="preferredTimeZoneId" /></td>
+					<td><s:errors path="preferredTimeZoneId" cssClass="error" /></td>
+				</tr>
+				<tr>
+					<td><s:checkbox path="disabled" />Disabled</td>
+					<td><s:errors path="disabled" cssClass="error" /></td>
 				</tr>
 				<tr>
 					<td><s:label path="roles">Roles</s:label></td>

@@ -15,9 +15,47 @@ public class User {
   private String password;
   @Size(min = 8, max = 30)
   private String retypedPassword;
-  private boolean enabled;
+  @Size(min = 2, max = 30)
+  private String firstName;
+  @Size(min = 2, max = 30)
+  private String lastName;
+  private String preferredTimeZoneId;
+  private boolean disabled;
+
   public String getEmail() {
     return email;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public String getPreferredTimeZoneId() {
+    return preferredTimeZoneId;
+  }
+
+  public void setPreferredTimeZoneId(String preferredTimeZoneId) {
+    this.preferredTimeZoneId = preferredTimeZoneId;
+  }
+
+  public boolean isDisabled() {
+    return disabled;
+  }
+
+  public void setDisabled(boolean disabled) {
+    this.disabled = disabled;
   }
 
   public void setEmail(String email) {
@@ -51,14 +89,6 @@ public class User {
 
   public void setRetypedPassword(String retypedPassword) {
     this.retypedPassword = retypedPassword;
-  }
-
-  public boolean isEnabled() {
-    return enabled;
-  }
-
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
   }
 
   public List<String> getRoles() {
