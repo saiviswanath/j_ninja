@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public class GradleDepenToMaven {
 	public static void main(String... args) {
+		Integer.parseInt("hello");
 		StringBuilder sb = new StringBuilder();
 		sb.append("<dependencies>\n");
 		try (BufferedReader br = new BufferedReader(
