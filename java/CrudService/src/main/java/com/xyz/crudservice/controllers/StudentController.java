@@ -1,5 +1,8 @@
 package com.xyz.crudservice.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -8,10 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +34,7 @@ import com.xyz.crudservice.converters.StudentConverter;
 import com.xyz.crudservice.dto.StudentDto;
 import com.xyz.crudservice.enums.SortColumn;
 import com.xyz.crudservice.exceptions.CrudServiceException;
+import com.xyz.crudservice.services.HtmlToPDFServiceImpl;
 import com.xyz.crudservice.services.StudentService;
 import com.xyz.crudservice.utilbeans.PageAndSortData;
 import com.xyz.crudserviceclient.beans.StudentBean;
@@ -50,6 +58,8 @@ public class StudentController {
   private StudentService studentService;
   @Autowired
   private StudentConverter studentConverter;
+  @Autowired
+  private HtmlToPDFServiceImpl htmlToPdf;
 
   @RequestMapping(value = "", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -216,5 +226,17 @@ public class StudentController {
       throw new CrudServiceException(FailureCause.UNEXPECTED, "Unable to delete Student", e);
     }
     return new ResponseEntity<>(new BooleanResponse(deletedRecord), HttpStatus.OK);
+  }
+  
+  @RequestMapping(value="/getpdf", method= RequestMethod.PUT)
+  public void htmlToPdf(@RequestBody String body, final HttpServletResponse response) throws IOException {
+    byte[] bytes = htmlToPdf.convertHtmlToPDF(Jsoup.parse(body));
+    InputStream is = new ByteArrayInputStream(bytes);
+    response.setContentLength(bytes.length);
+    response.setContentType("application/pdf");
+    response.setHeader("Content-Disposition", "attachment");
+    response.setHeader("filename", "outpdf");
+    IOUtils.copy(is, response.getOutputStream());
+    response.flushBuffer();
   }
 }
