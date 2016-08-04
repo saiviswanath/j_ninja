@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.xyz.db.DBConnector_MYSQL_Test;
+/*import com.xyz.db.DBConnector_MYSQL_Test;*/
 import com.xyz.dto.Student;
 
 public class StudentDAO_Test {
@@ -19,7 +19,7 @@ public class StudentDAO_Test {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		DBConnector_MYSQL_Test.setUpBeforeClass();
+		//DBConnector_MYSQL_Test.setUpBeforeClass();
 	}
 
 	@Test
