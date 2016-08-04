@@ -7,34 +7,38 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Update Student Page Request</title>
-<link rel="stylesheet" href="./css/global.css" />
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script type="text/javascript">
 	$(function() {
-		var text = $("#resultMessage").text();
-		if (text == "") {
-			$("#resultMessage").hide();
-		} else {
-			$("#resultMessage").show();
+		var text = $("#deleteResultMessage").text();
+		if (text != "") {
+			$("#deleteResultMessage").show();
 		}
-		
-		var text = $("#messageDisplay").text();
-		if (text == "") {
-			$("#messageDisplay").hide();
-		} else {
-			$("#messageDisplay").show();
+
+		var text = $("#deleteMessageDisplay").text();
+		if (text != "") {
+			$("#deleteMessageDisplay").show();
 		}
+
+		$("#deleteForm").on("submit", function(event) {
+			event.preventDefault();
+			$.ajax({
+				url : $(this).attr("action"),
+				data : $(this).serialize(),
+				type : "POST"
+			}).done(function(result) {
+				$("#deletebody").html(result);
+			});
+		});
 	});
 </script>
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-	</div>
-	<div id="body">
-		<div id="resultMessage" class="resultBlock">${ResultMessage}</div>
-		<div id="messageDisplay" class="errorblock">${ErrorMessage}</div>
-		<s:form method="DELETE" commandName="updateInputBean"
+	<div id="deletebody">
+		<div id="deleteResultMessage" class="resultBlock"
+			style="display: none;">${ResultMessage}</div>
+		<div id="deleteMessageDisplay" class="errorblock"
+			style="display: none;">${ErrorMessage}</div>
+		<s:form id="deleteForm" method="POST" commandName="updateInputBean"
 			action="./deleteFormDetails.do">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<h3>
@@ -52,12 +56,8 @@
 					<td><s:errors path="lastName" cssClass="error" /></td>
 				</tr>
 			</table>
-			<input type="hidden" name="_method" value="DELETE" />
 			<input type="submit" value="delete" />
 		</s:form>
-	</div>
-	<div id="footer">
-		<%@ include file="footerinclude.jsp"%>
 	</div>
 </body>
 </html>

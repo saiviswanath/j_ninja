@@ -11,9 +11,6 @@
 <link rel="stylesheet" href="./css/global.css" />
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-	</div>
 	<h3>
 		<c:out value="Enter New User Details: " />
 	</h3>

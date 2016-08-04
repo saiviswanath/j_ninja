@@ -7,18 +7,28 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Index Page</title>
+<script>
+	$(function() {
+		$("#updateFormBody").on("submit", function(event) {
+			event.preventDefault();
+			$.ajax({
+				url : $(this).attr("action"),
+				data : $(this).serialize(),
+				type : "POST"
+			}).done(function(result) {
+				$("#updateFetchbody").html(result);
+			});
+		});
+	});
+</script>
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-		<a href="<c:url value="./updateInputForm.do"/>">Update Student</a>
-	</div>
-	<h3>
-		<c:out value="Update Student Details: " />
-	</h3>
-	<div id="body">
-		<s:form action="./updateStudentDetails.do" method="PUT"
-			commandName="student">
+	<div id="updateFetchbody">
+		<h3>
+			<c:out value="Update Student Details: " />
+		</h3>
+		<s:form id="updateFormBody" action="./updateStudentDetails.do"
+			method="POST" commandName="student">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<table id="student-table" cellspacing="1" cellpadding="1">
 				<tr>
@@ -88,12 +98,10 @@
 					<td><s:errors path="address.pin" cssClass="error" /></td>
 				</tr>
 			</table>
-			<input type="hidden" name="_method" value="PUT" />
+			<!-- 			<input type="hidden" name="_method" value="PUT" />
+ -->
 			<input type="submit" value="Update" />
 		</s:form>
-	</div>
-	<div id="footer">
-		<%@ include file="footerinclude.jsp"%>
 	</div>
 </body>
 </html>

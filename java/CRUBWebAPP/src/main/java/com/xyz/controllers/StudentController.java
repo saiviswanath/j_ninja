@@ -176,7 +176,8 @@ public class StudentController {
   }
 
   @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_WRITE')")
-  @RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.DELETE)
+  /*@RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.DELETE)*/
+  @RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.POST)
   public ModelAndView deleteFormDetails(@Valid @ModelAttribute UpdateInputBean updateInputBean,
       BindingResult bindingResult, final HttpServletResponse res) {
     String firstName = updateInputBean.getFirstName();

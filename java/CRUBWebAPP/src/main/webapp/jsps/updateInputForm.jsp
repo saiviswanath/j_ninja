@@ -7,35 +7,37 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Update Student Page Request</title>
-<link rel="stylesheet" href="./css/global.css" />
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script type="text/javascript">
-	$(function() {
-		var text = $("#resultMessage").text();
-		if (text == "") {
-			$("#resultMessage").hide();
-		} else {
-			$("#resultMessage").show();
-		}
-
-		var text = $("#messageDisplay").text();
-		if (text == "") {
-			$("#messageDisplay").hide();
-		} else {
-			$("#messageDisplay").show();
-		}
+$(function() {		
+	var text = $("#updateResultMessage").text();
+	if (text != "") {
+		$("#updateResultMessage").show();
+	}
+	
+	var text = $("#updateMessageDisplay").text();
+	if (text != "") {
+		$("#updateMessageDisplay").show();
+	}
+	
+	$("#updateForm").on("submit", function(event) {
+		event.preventDefault();
+		$.ajax({
+			url : $(this).attr("action"),
+			data : $(this).serialize(),
+			type : "GET"
+		}).done(function(result) {
+			$("#updateBody").html(result);
+		});
 	});
+});
 </script>
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-	</div>
-	<div id="body">
-		<div id="resultMessage" class="resultBlock">${ResultMessage}</div>
-		<div id="messageDisplay" class="errorblock">${ErrorMessage}</div>
+	<div id="updateBody">
+		<div id="updateResultMessage" class="resultBlock" style="display:none;">${ResultMessage}</div>
+		<div id="updateMessageDisplay" class="errorblock" style="display:none;">${ErrorMessage}</div>
 
-		<s:form method="GET" commandName="updateInputBean"
+		<s:form id="updateForm" method="GET" commandName="updateInputBean"
 			action="./fetchUpdateFormDetails.do">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<h3>
@@ -53,11 +55,8 @@
 					<td><s:errors path="lastName" cssClass="error" /></td>
 				</tr>
 			</table>
-			<input id="submitButton" type="submit" value="FetchUpdateForm" />
+			<input id="updateSubmitButton" type="submit" value="FetchUpdateForm" />
 		</s:form>
-	</div>
-	<div id="footer">
-		<%@ include file="footerinclude.jsp"%>
 	</div>
 </body>
 </html>

@@ -3,14 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/security/tags"
 	prefix="sec"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Header Page</title>
-</head>
-<body>
-	<div id="header">
+
 		<table>
 			<tr>
 				<td><a href="/CRUBWebAPP/index.jsp">Home</a></td>
@@ -33,6 +26,3 @@
 				</table>
 			</div>
 		</sec:authorize>
-	</div>
-</body>
-</html>

@@ -8,16 +8,10 @@
 <title>Index Page</title>
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-	</div>
 	Thank you, ${student.firstName} ${student.lastName} for registering to
 	courses &nbsp;
 	<c:forEach var="course" items="${student.courses}">
   		${course} &nbsp;
  	</c:forEach>
- 		<div id="footer">
-		<%@ include file="footerinclude.jsp"%>
-	</div>
 </body>
 </html>

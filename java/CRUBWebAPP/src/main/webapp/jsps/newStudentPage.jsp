@@ -8,34 +8,43 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>New Student Page</title>
 
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
-<link rel="stylesheet" href="./css/global.css" />
 <script src="./js/global.js"></script>
+<script>
+	$(function() {
+		$("#createSubmitButton").on("click", function(event) {
+			event.preventDefault();
+			var form = $("#createform");
+			$.ajax({
+				url :  form.attr("action"),
+				data : form.serialize(),
+				type : "POST"
+			}).done(function(result) {
+				$("#createSubmitButton").hide();
+				$("#createbody").html(result);
+			}).fail(function( xhr, status, errorThrown ) {
+				alert("FAILED" + "----" + status + "---" + errorThrown);
+			});
+		});
+	});
+</script>
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-	</div>
-	<h3>
-		<c:out value="Enter New Student Details: " />
-	</h3>
-	<div id="body">
-		<s:form action="./newStudentDetails.do" method="POST"
+	<div id="createbody">
+		<h3>
+			<c:out value="Enter New Student Details: " />
+		</h3>
+		<s:form id="createform" action="./newStudentDetails.do" method="POST"
 			commandName="student">
 			<s:errors path="*" cssClass="errorblock" element="div" />
 			<table id="student-table" cellspacing="1" cellpadding="1">
 				<tr>
 					<td><s:label path="firstName">First Name</s:label></td>
-					<td><s:input path="firstName"/></td>
+					<td><s:input path="firstName" /></td>
 					<td><s:errors path="firstName" cssClass="error" /></td>
 				</tr>
 				<tr>
 					<td><s:label path="lastName">Last Name</s:label></td>
-					<td><s:input path="lastName"/></td>
+					<td><s:input path="lastName" /></td>
 					<td><s:errors path="lastName" cssClass="error" /></td>
 				</tr>
 				<tr>
@@ -95,11 +104,9 @@
 					<td><s:errors path="address.pin" cssClass="error" /></td>
 				</tr>
 			</table>
-			<input type="submit" value="Register" />
+
 		</s:form>
 	</div>
-	<div id="footer">
-		<%@ include file="footerinclude.jsp"%>
-	</div>
+	<input type="button" id="createSubmitButton" value="Register" />
 </body>
 </html>

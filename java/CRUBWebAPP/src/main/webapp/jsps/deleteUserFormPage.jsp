@@ -10,9 +10,6 @@
 <link rel="stylesheet" href="./css/global.css" />
 </head>
 <body>
-	<div id="header">
-		<%@ include file="headerinclude.jsp"%>
-	</div>
 	<div id="body">
 		<h3>
 			<c:out value="Enter User Name Details to delete: " />
