@@ -124,4 +124,12 @@ public class StudentServiceClient extends AbstractCrudServiceClient {
     booleanResponse.verify();
     return booleanResponse.isResponse();
   }
+
+  public byte[] exportStudentsToExcel(PagedCommand pagedCommand) {
+    if (pagedCommand == null) {
+      pagedCommand = new PagedCommand(MAX_PAGED_RECORDS);
+    }
+    String url = getUrl("/student/export", pagedCommand);
+    return crudServiceRestTemplate.getForObject(url, byte[].class);
+  }
 }

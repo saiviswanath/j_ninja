@@ -1,5 +1,8 @@
 package com.xyz.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,8 +79,32 @@ public class StudentController {
     mav.addObject("studentList", studentList);
     mav.addObject("noOfPages", noOfPages);
     mav.addObject("currentPage", first);
+    mav.addObject("noOfRecords", noOfRecords);
 
     return mav;
+  }
+
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_READ')")
+  @RequestMapping(value = "/export/{filename}", method = RequestMethod.GET, produces = "application/vnd.ms-excel")
+  public void exportReport(@RequestParam(value = "first", required = false) Integer first,
+      @RequestParam(value = "max", required = false) Integer max, @RequestParam(value = "sortBy",
+      required = false) String sortBy,
+      @RequestParam(value = "sortDirection", required = false) String sortDir,
+      @PathVariable("filename") String filename, final HttpServletResponse response) throws IOException {
+    SortablePagedCommand sortablePagedCommand = new SortablePagedCommand();
+    sortablePagedCommand.setFirst(first);
+    sortablePagedCommand.setMax(max);
+    sortablePagedCommand.setSort(sortBy);
+    sortablePagedCommand.setSortDir(sortDir);
+
+    byte[] bytes = studentServiceClient.exportStudentsToExcel(sortablePagedCommand);
+    InputStream is = new ByteArrayInputStream(bytes);
+    response.setContentLength(bytes.length);
+    response.setContentType("application/vnd.ms-excel");
+    response.setHeader("Content-Disposition", "attachment");
+    response.setHeader("filename", filename);
+    IOUtils.copy(is, response.getOutputStream());
+    response.flushBuffer();
   }
 
   @ModelAttribute
@@ -176,8 +205,7 @@ public class StudentController {
   }
 
   @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_WRITE')")
-  /*@RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.DELETE)*/
-  @RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.POST)
+  @RequestMapping(value = "/deleteFormDetails.do", method = RequestMethod.DELETE)
   public ModelAndView deleteFormDetails(@Valid @ModelAttribute UpdateInputBean updateInputBean,
       BindingResult bindingResult, final HttpServletResponse res) {
     String firstName = updateInputBean.getFirstName();

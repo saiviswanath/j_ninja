@@ -29,6 +29,16 @@
 			<version>1.9.2</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.13</version>
+		</dependency>
+		<dependency>
 			<groupId>ServiceUtils</groupId>
 			<artifactId>ServiceUtils</artifactId>
 			<version>0.0.1</version>

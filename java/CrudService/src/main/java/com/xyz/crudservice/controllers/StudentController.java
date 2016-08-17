@@ -1,6 +1,7 @@
 package com.xyz.crudservice.controllers;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +34,7 @@ import com.xyz.crudservice.converters.StudentConverter;
 import com.xyz.crudservice.dto.StudentDto;
 import com.xyz.crudservice.enums.SortColumn;
 import com.xyz.crudservice.exceptions.CrudServiceException;
+import com.xyz.crudservice.export.StudentExcelExport;
 import com.xyz.crudservice.services.HtmlToPDFServiceImpl;
 import com.xyz.crudservice.services.StudentService;
 import com.xyz.crudservice.utilbeans.PageAndSortData;
@@ -64,9 +65,9 @@ public class StudentController {
   @RequestMapping(value = "", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<StudentsResponse> getAllStudents(@RequestParam(value = "first",
-      required = false) Integer first, @RequestParam(value = "max", required = false) Integer max,
-      @RequestParam(value = "sortBy", required = false) String sortBy, @RequestParam(
-          value = "sortDirection", required = false) SortDirection sortDir) {
+  required = false) Integer first, @RequestParam(value = "max", required = false) Integer max,
+  @RequestParam(value = "sortBy", required = false) String sortBy, @RequestParam(
+      value = "sortDirection", required = false) SortDirection sortDir) {
     if (first == null) {
       first = ZERO;
     }
@@ -227,9 +228,54 @@ public class StudentController {
     }
     return new ResponseEntity<>(new BooleanResponse(deletedRecord), HttpStatus.OK);
   }
-  
-  @RequestMapping(value="/getpdf", method= RequestMethod.PUT)
-  public void htmlToPdf(@RequestBody String body, final HttpServletResponse response) throws IOException {
+
+  @RequestMapping(value = "/export", method = RequestMethod.GET)
+  public ResponseEntity<byte[]> exportStudentsToExcel(@RequestParam(value = "first",
+  required = false) Integer first, @RequestParam(value = "max", required = false) Integer max,
+  @RequestParam(value = "sortBy", required = false) String sortBy, @RequestParam(
+      value = "sortDirection", required = false) SortDirection sortDir) throws IOException {
+    if (first == null) {
+      first = ZERO;
+    }
+
+    if (max == null) {
+      max = MAX_VALUE;
+    }
+
+    if (sortDir == null) {
+      sortDir = SortDirection.ASCENDING;
+    }
+
+    if (sortBy == null) {
+      sortBy = SortColumn.FIRSTNAME.getColName();
+    }
+
+    // Encapsulate the pagination and sort params into one object
+    PageAndSortData pageAndSortData = new PageAndSortData();
+    pageAndSortData.setFirst(first);
+    pageAndSortData.setMax(max);
+    pageAndSortData.setSortBy(sortBy);
+    pageAndSortData.setSortDirection(sortDir);
+
+    List<StudentDto> students = null;
+    try {
+      students = studentService.getAllStudents(pageAndSortData);
+      if (students == null || students.size() == 0) {
+        students = new ArrayList<>(0);
+      }
+    } catch (Exception e) {
+      throw new CrudServiceException(FailureCause.UNEXPECTED,
+          "Unable to fetch all students from DB", e);
+    }
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    StudentExcelExport.excelExporter(bos, students);
+    return new ResponseEntity<>(bos.toByteArray(), HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/getpdf", method = RequestMethod.PUT)
+  public void htmlToPdf(@RequestBody String body, final HttpServletResponse response)
+      throws IOException {
     byte[] bytes = htmlToPdf.convertHtmlToPDF(Jsoup.parse(body));
     InputStream is = new ByteArrayInputStream(bytes);
     response.setContentLength(bytes.length);

@@ -12,9 +12,23 @@
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="./css/global.css" />
 <script>
+
+              function PageAndSort(first, max, sortBy, sortDir) {
+                     this.first = first;
+                     this.max = max;
+                     this.sortBy = sortBy;
+                     this.sortDir = sortDir;
+              }
+              
+              var pageAndSort;
+              
        $(function() {
+           $(window).load(function() {
+              pageAndSort = new PageAndSort(0, '${maxPageRecords}', '${sortByField}', '${sortDirField}');
+              });
+          
               // Tab structure
-                       $( "#tabs" ).tabs();
+              $( "#tabs" ).tabs();
 
               $("li:nth-child(2) > a").on("click", function(event) {
                      $.ajax({
@@ -46,9 +60,8 @@
                      });
               });
               
-              // Sort and direction
+/*               // Sort and direction
               $("#sortBy").on("change", function(event) {
-                     
                      var form = $("#sortBySelectForm");
                      $.ajax({
                            url :  form.attr("action"),
@@ -71,7 +84,7 @@
                            hideStuff();
                            $("#parentDiv").html(result);
                      });
-              });
+              }); */
               
               
               // Sorting and direction buttons
@@ -93,6 +106,9 @@
               
               // Pagination links
               $("#prevButton").on("click", function(event) {
+                       var first = $("#storePrev").val();
+                       pageAndSort = new PageAndSort(first, '${maxPageRecords}', '${sortByField}', '${sortDirField}');
+                                  
                      var form = $("#prevLink");
                      $.ajax({
                            url :  form.attr("action"),
@@ -105,6 +121,9 @@
               });
               
               $("#nextButton").on("click", function(event) {
+                var first = $("#storeNext").val();
+                       pageAndSort = new PageAndSort(first, '${maxPageRecords}', '${sortByField}', '${sortDirField}');
+                            
                      var form = $("#nextLink");
                      $.ajax({
                            url :  form.attr("action"),
@@ -118,10 +137,14 @@
               
               
               $.each($("[id^=numButton]"), function() {
-                     var num = $(this).val();
+                           var num = $(this).val();
+                           var selector = "#storeNum" + num;
+                     
                      var formSelector = "#numLink" + num;
                      var buttonSelector = "#numButton" + num;
                      $(buttonSelector).on("click", function(event) {
+                     var first = $(selector).val();
+                     pageAndSort = new PageAndSort(first, '${maxPageRecords}', '${sortByField}', '${sortDirField}');
                            var form = $(formSelector);
                            $.ajax({
                                   url :  form.attr("action"),
@@ -132,6 +155,26 @@
                                   $("#parentDiv").html(result);
                            });
                      });
+              });
+              
+              $("#exportButton").on("click", function(event) {
+                var form = $("#exportButForm");
+                var url = form.attr("action");
+                var qs = "first=" + pageAndSort.first + "&max=" + pageAndSort.max + "&sortBy=" + pageAndSort.sortBy +
+                                   "&sortDirection=" + pageAndSort.sortDir;
+                
+                var finalurl = url + "?" + qs;
+                window.location.href = finalurl;exportAllButton
+              });
+              
+              $("#exportAllButton").on("click", function(event) {
+                var form = $("#exportAllButForm");
+                var url = form.attr("action");
+                var qs = "first=" + 0 + "&max=" + getMaxRecords() + "&sortBy=" + pageAndSort.sortBy +
+                                   "&sortDirection=" + pageAndSort.sortDir;
+                
+                var finalurl = url + "?" + qs;
+                window.location.href = finalurl;
               });
               
               function hideStuff() {
@@ -149,6 +192,11 @@
                      }
               }
               
+              function getMaxRecords() {
+                var noOfRecords = '${noOfRecords}';
+                return noOfRecords;
+              }
+              
               function changeOnSortDir(button) {
                      var buttonValue = button.val();
                      var sortDirection = '${sortDirField}';
@@ -160,28 +208,35 @@
               }
               
               function decodeHtml(html) {
-   					 var txt = document.createElement("textarea");
-    				 txt.innerHTML = html;
-    				 return txt.value;
-			  }
+                                   var txt = document.createElement("textarea");
+                           txt.innerHTML = html;
+                           return txt.value;
+                     }
               
               function sortingButtonAjaxCall(button, sortBy) {
-                     changeOnSortDir(button);
+               changeOnSortDir(button);
+
+               var maxPageRec = '${maxPageRecords}';
+               var sortDir = getSortDirection();
+               
+               pageAndSort = new PageAndSort(0, maxPageRec, sortBy, sortDir);    
                      $.ajax({
                            url :  "./getHomePage.do",
                            data : {
                                   first : 0,
-                                  max : '${maxPageRecords}',
+                                  max : maxPageRec,
                                   sortBy : sortBy,
-                                  sortDirection : getSortDirection()
+                                  sortDirection : sortDir
                            },
                            type : "GET"
                      }).done(function(result) {
                            hideStuff();
                            $("#parentDiv").html(result);
                      });
+                    
               }
-       });    
+              
+       });
 </script>
 </head>
 <body>
@@ -201,8 +256,9 @@
                            <c:out value="List of active Students" />
                      </h3>
 
-                     <c:set var="sortByField" value="${sortByField}" />
-                     <c:set var="sortDirField" value="${sortDirField}" />
+                     <c:set var="sortByField" value="${sortByField}"/>
+                     <c:set var="sortDirField" value="${sortDirField}"/>
+                     <c:set var="noOfRecords" value="${noOfRecords}"/>
 
                      <div id="body">
                            <%-- <!-- SortBy Form -->
@@ -249,8 +305,20 @@
                            </form>
 --%>
                           <table>
-                                  <tr><td>SortBy:&nbsp;</td><td><c:out value="${sortByField}" /></td></tr>
-                                  <tr><td>SortDirection:&nbsp;</td><td><c:out value="${sortDirField}" /></td></tr>
+                                  <tr><td>SortBy:&nbsp;</td><td><c:out value="${sortByField}" /></td>
+                                  <td>SortDirection:&nbsp;</td><td><c:out value="${sortDirField}" /></td></tr>
+                                  <tr>
+                                  <td>
+                                  <form id="exportButForm" method="GET" action="./export/StudentExport.xls">
+                                         <input id="exportButton" type="button" value="export">
+                                  </form>
+                                  </td>
+                                  <td>
+                                         <form id="exportAllButForm" method="GET" action="./export/StudentExport.xls">
+                                         <input id="exportAllButton" type="button" value="exportAll">
+                                     </form>
+                                  </td>
+                                  </tr>
                            </table>
 
                            <table id="student-table" border="1" cellpadding="1" cellspacing="1">
@@ -282,7 +350,7 @@
                            <%--For displaying Previous link except for the 1st page --%>
                            <c:if test="${currentPage != 0}">
                            <form id="prevLink" action="./getHomePage.do">
-                                  <input type="hidden" name="first" value="${currentPage - maxPageRecords}" />
+                                  <input id = "storePrev" type="hidden" name="first" value="${currentPage - maxPageRecords}" />
                                   <input type="hidden" name="max" value="${maxPageRecords}" />
                                   <input type="hidden" name="sortBy" value="${sortByField}" />
                                   <input type="hidden" name="sortDirection" value="${sortDirField}" />
@@ -304,7 +372,7 @@
                                                        <c:otherwise>
                                                        <td>
                                                        <form id="numLink${i}" action="./getHomePage.do">
-                                                              <input type="hidden" name="first" value="${(i-1) * maxPageRecords}" />
+                                                              <input id="storeNum${i}" type="hidden" name="first" value="${(i-1) * maxPageRecords}" />
                                                               <input type="hidden" name="max" value="${maxPageRecords}" />
                                                               <input type="hidden" name="sortBy" value="${sortByField}" />
                                                               <input type="hidden" name="sortDirection" value="${sortDirField}" />
@@ -322,7 +390,7 @@
                            <%--For displaying Next link --%>
                            <c:if test="${currentPage lt ((noOfPages - 1) * maxPageRecords)}">
                                   <form id="nextLink" action="./getHomePage.do">
-                                  <input type="hidden" name="first" value="${currentPage + maxPageRecords}" />
+                                  <input id="storeNext" type="hidden" name="first" value="${currentPage + maxPageRecords}" />
                                   <input type="hidden" name="max" value="${maxPageRecords}" />
                                   <input type="hidden" name="sortBy" value="${sortByField}" />
                                   <input type="hidden" name="sortDirection" value="${sortDirField}" />
