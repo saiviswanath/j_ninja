@@ -1,0 +1,9 @@
+{
+	"csvpath" : "E:\\testcsv\\*",
+	"email.smtpserver" : "smtps:\/\/viswanath.palaparthi@gmail.com:****@smtp.gmail.com",
+	"email.from" : "viswanath.palaparthi@gmail.com",
+	"email.To" : "viswanath.palaparthi@gmail.com",
+	"email.subject" : "Test",
+	"email.body" : "Please find attached reports.",
+	"zipFileName" : "E:\\compress.zip"
+}

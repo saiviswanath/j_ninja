@@ -1,0 +1,6 @@
+{
+	"name" : "Compression",
+	"description" : "File Compression",
+	"version" : "0.1.0",
+	"main" : "lib\\ReportHelper.js"
+}
