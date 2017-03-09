@@ -7,12 +7,21 @@
 	<packaging>war</packaging>
 	<name>CrudService</name>
 	<description>CrudService</description>
+		<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.2.RELEASE</version>
+</parent>
 	<properties>
 		<maven.tomcat.port>9092</maven.tomcat.port>
 		<maven.spring.version>4.2.6.RELEASE</maven.spring.version>
 		<maven.jackson.version>2.7.4</maven.jackson.version>
 	</properties>
 	<dependencies>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
